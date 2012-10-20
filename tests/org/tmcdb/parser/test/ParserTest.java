@@ -10,6 +10,7 @@ import org.tmcdb.parser.Parser;
 import org.tmcdb.parser.ParserException;
 import org.tmcdb.parser.instructions.CreateTableInstruction;
 import org.tmcdb.parser.instructions.Instruction;
+import org.tmcdb.parser.instructions.SelectInstruction;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -50,6 +51,7 @@ public final class ParserTest {
         checkColumn(createTableInstruction, 1, "b", NumericType.INT);
         checkColumn(createTableInstruction, 2, "name", new VarChar(20));
         checkColumn(createTableInstruction, 3, "Address", new VarChar(300));
+        assertEquals(((VarChar) createTableInstruction.getColumns().get(3).getType()).getNumberOfChars(), 300);
     }
 
     @Test(expected = ParserException.class)
@@ -71,5 +73,23 @@ public final class ParserTest {
         Column column = instruction.getColumns().get(index);
         assertEquals(column.getName(), name);
         assertEquals(column.getType(), type);
+    }
+
+    @Test
+    public void select() {
+        Instruction i = Parser.parse("SELECT * FROM tableName");
+        assertTrue(i instanceof SelectInstruction);
+        SelectInstruction si = (SelectInstruction) i;
+        assertEquals(si.getTableName(), "tableName");
+
+        Instruction i2 = Parser.parse("SELECT * FROM chair");
+        assertTrue(i2 instanceof SelectInstruction);
+        SelectInstruction si2 = (SelectInstruction) i2;
+        assertEquals(si2.getTableName(), "chair");
+    }
+
+    @Test(expected = ParserException.class)
+    public void selectWrongSyntax() {
+        Parser.parse("SELECT # FROM tableName");
     }
 }

@@ -2,10 +2,15 @@ package org.tmcdb.parser;
 
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserManager;
+import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.create.table.ColDataType;
 import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
+import net.sf.jsqlparser.statement.select.FromItem;
+import net.sf.jsqlparser.statement.select.PlainSelect;
+import net.sf.jsqlparser.statement.select.Select;
+import net.sf.jsqlparser.statement.select.SelectBody;
 import org.jetbrains.annotations.NotNull;
 import org.tmcdb.engine.data.Column;
 import org.tmcdb.engine.data.NumericType;
@@ -13,6 +18,7 @@ import org.tmcdb.engine.data.Type;
 import org.tmcdb.engine.data.VarChar;
 import org.tmcdb.parser.instructions.CreateTableInstruction;
 import org.tmcdb.parser.instructions.Instruction;
+import org.tmcdb.parser.instructions.SelectInstruction;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -39,7 +45,24 @@ public final class Parser {
         if (parsedStatement instanceof CreateTable) {
             return parseCreateTable((CreateTable) parsedStatement);
         }
+        if (parsedStatement instanceof Select) {
+            return parseSelectStatement(parsedStatement);
+        }
         throw new ParserException("Unsupported SQL statement " + parsedStatement);
+    }
+
+    @NotNull
+    private static Instruction parseSelectStatement(@NotNull Statement parsedStatement) {
+        SelectBody selectBody = ((Select) parsedStatement).getSelectBody();
+        if (!(selectBody instanceof PlainSelect)) {
+            throw new ParserException("Unsupported complex SELECT statement " + parsedStatement);
+        }
+        FromItem fromItem = ((PlainSelect) selectBody).getFromItem();
+        if (!(fromItem instanceof Table)) {
+            throw new ParserException("Unsupported complex SELECT statement " + parsedStatement);
+        }
+        String tableName = ((Table) fromItem).getName();
+        return new SelectInstruction(tableName);
     }
 
     @NotNull
@@ -47,7 +70,7 @@ public final class Parser {
         String tableName = parsedStatement.getTable().getName();
         List columnDefinitions = parsedStatement.getColumnDefinitions();
         if (columnDefinitions == null) {
-            throw new ParserException("CREATE TABLE statement must contain column definitions.");
+            throw new ParserException("CREATE TABLE statement must contain column definitions");
         }
         List<Column> columns = parseColumnDefinitions(columnDefinitions);
         return new CreateTableInstruction(tableName, columns);
