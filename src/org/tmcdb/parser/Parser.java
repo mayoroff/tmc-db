@@ -1,12 +1,18 @@
 package org.tmcdb.parser;
 
 import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.expression.DoubleValue;
+import net.sf.jsqlparser.expression.LongValue;
+import net.sf.jsqlparser.expression.StringValue;
+import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
+import net.sf.jsqlparser.expression.operators.relational.ItemsList;
 import net.sf.jsqlparser.parser.CCJSqlParserManager;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.create.table.ColDataType;
 import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
+import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.FromItem;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
@@ -17,11 +23,13 @@ import org.tmcdb.engine.data.NumericType;
 import org.tmcdb.engine.data.Type;
 import org.tmcdb.engine.data.VarChar;
 import org.tmcdb.parser.instructions.CreateTableInstruction;
+import org.tmcdb.parser.instructions.InsertInstruction;
 import org.tmcdb.parser.instructions.Instruction;
 import org.tmcdb.parser.instructions.SelectInstruction;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -46,14 +54,60 @@ public final class Parser {
             return parseCreateTable((CreateTable) parsedStatement);
         }
         if (parsedStatement instanceof Select) {
-            return parseSelectStatement(parsedStatement);
+            return parseSelectStatement((Select) parsedStatement);
+        }
+        if (parsedStatement instanceof Insert) {
+            return parseInsert((Insert) parsedStatement);
         }
         throw new ParserException("Unsupported SQL statement " + parsedStatement);
     }
 
+    private static Instruction parseInsert(Insert parsedStatement) {
+        String tableName = parsedStatement.getTable().getName();
+        List<InsertInstruction.ColumnNameAndData> result = parseColumnNamesAndValues(parsedStatement);
+        return new InsertInstruction(tableName, result);
+    }
+
     @NotNull
-    private static Instruction parseSelectStatement(@NotNull Statement parsedStatement) {
-        SelectBody selectBody = ((Select) parsedStatement).getSelectBody();
+    private static List<InsertInstruction.ColumnNameAndData> parseColumnNamesAndValues(@NotNull Insert parsedStatement) {
+        ItemsList itemsList = parsedStatement.getItemsList();
+        if (!(itemsList instanceof ExpressionList)) {
+            throw new ParserException("Unsupported complex INSERT statement " + parsedStatement);
+        }
+        List expressions = ((ExpressionList) itemsList).getExpressions();
+        ArrayList<InsertInstruction.ColumnNameAndData> result = new ArrayList<InsertInstruction.ColumnNameAndData>();
+        Iterator expressionsIterator = expressions.iterator();
+        Iterator columnsIterator = parsedStatement.getColumns().iterator();
+        while (columnsIterator.hasNext() && expressionsIterator.hasNext()) {
+            Object column = columnsIterator.next();
+            assert column instanceof net.sf.jsqlparser.schema.Column;
+            String columnName = ((net.sf.jsqlparser.schema.Column) column).getColumnName();
+            result.add(new InsertInstruction.ColumnNameAndData(columnName, parseValue(expressionsIterator.next())));
+        }
+        if (columnsIterator.hasNext() || expressionsIterator.hasNext()) {
+            throw new ParserException("Unmatched number of column and value expressions");
+        }
+        return result;
+    }
+
+    @NotNull
+    private static Object parseValue(@NotNull Object expression) {
+        if (expression instanceof LongValue) {
+            long longValue = ((LongValue) expression).getValue();
+            return (int) longValue;
+        }
+        if (expression instanceof StringValue) {
+            return ((StringValue) expression).getValue();
+        }
+        if (expression instanceof DoubleValue) {
+            return ((DoubleValue) expression).getValue();
+        }
+        throw new ParserException("Invalid value expression: " + expression);
+    }
+
+    @NotNull
+    private static Instruction parseSelectStatement(@NotNull Select parsedStatement) {
+        SelectBody selectBody = parsedStatement.getSelectBody();
         if (!(selectBody instanceof PlainSelect)) {
             throw new ParserException("Unsupported complex SELECT statement " + parsedStatement);
         }

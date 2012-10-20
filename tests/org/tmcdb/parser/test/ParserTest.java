@@ -9,8 +9,11 @@ import org.tmcdb.engine.data.VarChar;
 import org.tmcdb.parser.Parser;
 import org.tmcdb.parser.ParserException;
 import org.tmcdb.parser.instructions.CreateTableInstruction;
+import org.tmcdb.parser.instructions.InsertInstruction;
 import org.tmcdb.parser.instructions.Instruction;
 import org.tmcdb.parser.instructions.SelectInstruction;
+
+import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -91,5 +94,46 @@ public final class ParserTest {
     @Test(expected = ParserException.class)
     public void selectWrongSyntax() {
         Parser.parse("SELECT # FROM tableName");
+    }
+
+    @Test
+    public void simpleInsert() {
+        Instruction instruction = Parser.parse("INSERT INTO t(a, b, c) VALUES (1, 2.3, 'abc')");
+        assertTrue(instruction instanceof InsertInstruction);
+        InsertInstruction insertInstruction = (InsertInstruction) instruction;
+        assertEquals(insertInstruction.getTableName(), "t");
+        List<InsertInstruction.ColumnNameAndData> columnNamesWithData = insertInstruction.getColumnNamesWithData();
+        assertEquals(columnNamesWithData.get(0).getColumnName(), "a");
+        assertEquals(columnNamesWithData.get(1).getColumnName(), "b");
+        assertEquals(columnNamesWithData.get(2).getColumnName(), "c");
+        assertEquals(columnNamesWithData.get(0).getData(), 1);
+        assertEquals(columnNamesWithData.get(1).getData(), 2.3);
+        assertEquals(columnNamesWithData.get(2).getData(), "abc");
+    }
+
+    @Test
+    public void singleInsert() {
+        Instruction instruction = Parser.parse("INSERT INTO t(a) VALUES ('abc')");
+        assertTrue(instruction instanceof InsertInstruction);
+        InsertInstruction insertInstruction = (InsertInstruction) instruction;
+        assertEquals(insertInstruction.getTableName(), "t");
+        List<InsertInstruction.ColumnNameAndData> columnNamesWithData = insertInstruction.getColumnNamesWithData();
+        assertEquals(columnNamesWithData.get(0).getColumnName(), "a");
+        assertEquals(columnNamesWithData.get(0).getData(), "abc");
+    }
+
+    @Test(expected = ParserException.class)
+    public void emptyInsert() {
+        Parser.parse("INSERT INTO t VALUES ");
+    }
+
+    @Test(expected = ParserException.class)
+    public void unmatchedNumberOfValueAndColumnExpressions() {
+        Parser.parse("INSERT INTO t(a, b, c, d) VALUES (1, 2.3, 'abc')");
+    }
+
+    @Test(expected = ParserException.class)
+    public void unmatchedNumberOfValueAndColumnExpressions2() {
+        Parser.parse("INSERT INTO t(a, b, c) VALUES (1, 2.3, 'abc', 3)");
     }
 }
