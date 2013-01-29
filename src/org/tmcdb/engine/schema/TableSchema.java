@@ -2,12 +2,13 @@ package org.tmcdb.engine.schema;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author Pavel Talanov
  */
-public final class TableSchema {
+public final class TableSchema implements Serializable {
 
     @NotNull
     private final String tableName;

@@ -3,10 +3,12 @@ package org.tmcdb.engine.schema;
 import org.jetbrains.annotations.NotNull;
 import org.tmcdb.engine.data.Type;
 
+import java.io.Serializable;
+
 /**
  * @author Pavel Talanov
  */
-public final class Column {
+public final class Column implements Serializable {
 
     @NotNull
     private final Type type;
