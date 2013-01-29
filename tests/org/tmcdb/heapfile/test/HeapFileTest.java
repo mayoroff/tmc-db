@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
  * Created by Arseny Mayorov.
  * Date: 22.10.12
  */
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public final class HeapFileTest {
 
     @Test(expected = FileNotFoundException.class)
@@ -48,7 +49,7 @@ public final class HeapFileTest {
     @Test(expected = IllegalArgumentException.class)
     public void getNonExistingPage() throws IOException {
         DataFile dataFile = new HeapFile("exists");
-        Page page = dataFile.getPage(0);
+        dataFile.getPage(0);
     }
 
     @Test
@@ -80,6 +81,7 @@ public final class HeapFileTest {
     public static void cleanup() throws IOException {
         File folder = new File("./data");
         final File[] files = folder.listFiles();
+        assert files != null;
         for (File f : files) f.delete();
         folder.delete();
     }
