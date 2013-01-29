@@ -1,5 +1,7 @@
 package org.tmcdb.engine.data;
 
+import org.tmcdb.engine.schema.Column;
+
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;

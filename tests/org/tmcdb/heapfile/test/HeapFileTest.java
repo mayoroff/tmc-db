@@ -4,9 +4,9 @@ import junit.framework.Assert;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.tmcdb.engine.data.Column;
 import org.tmcdb.engine.data.NumericType;
 import org.tmcdb.engine.data.Page;
+import org.tmcdb.engine.schema.Column;
 import org.tmcdb.heapfile.DataFile;
 import org.tmcdb.heapfile.HeapFile;
 

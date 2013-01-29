@@ -1,6 +1,7 @@
 package org.tmcdb.engine.data;
 
 import org.jetbrains.annotations.NotNull;
+import org.tmcdb.engine.schema.Column;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;

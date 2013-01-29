@@ -1,6 +1,7 @@
-package org.tmcdb.engine.data;
+package org.tmcdb.engine.schema;
 
 import org.jetbrains.annotations.NotNull;
+import org.tmcdb.engine.data.Type;
 
 /**
  * @author Pavel Talanov

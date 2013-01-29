@@ -1,5 +1,7 @@
 package org.tmcdb.engine.data;
 
+import org.tmcdb.engine.schema.Column;
+
 import java.util.List;
 
 /**

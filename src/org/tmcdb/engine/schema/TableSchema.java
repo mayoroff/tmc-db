@@ -1,21 +1,20 @@
-package org.tmcdb.parser.instructions;
+package org.tmcdb.engine.schema;
 
 import org.jetbrains.annotations.NotNull;
-import org.tmcdb.engine.schema.Column;
 
 import java.util.List;
 
 /**
  * @author Pavel Talanov
  */
-public final class CreateTableInstruction implements Instruction {
+public final class TableSchema {
 
     @NotNull
     private final String tableName;
     @NotNull
     private final List<Column> columns;
 
-    public CreateTableInstruction(@NotNull String tableName, @NotNull List<Column> columns) {
+    public TableSchema(@NotNull String tableName, @NotNull List<Column> columns) {
         this.tableName = tableName;
         this.columns = columns;
     }

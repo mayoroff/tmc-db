@@ -22,6 +22,16 @@ public class HeapFile implements DataFile {
     static final String DATA_FOLDER_NAME = "./data/";
     static final int PAGE_SIZE = 4096;
 
+    public HeapFile(String tableName) throws IOException {
+        File file = new File(DATA_FOLDER_NAME + tableName);
+        if (!file.exists())
+            throw new FileNotFoundException();
+        long size = file.length();
+
+        this.file = new RandomAccessFile(DATA_FOLDER_NAME + tableName, "rw");
+        buffer = this.file.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, size);
+    }
+
     @Override
     public Page getPage(int pageId) throws IllegalArgumentException {
         if ((pageId + 1) * PAGE_SIZE > buffer.capacity())
@@ -36,16 +46,5 @@ public class HeapFile implements DataFile {
 
     public static void createHeapFile(String tableName, int initialPages) throws IOException {
         new RandomAccessFile(DATA_FOLDER_NAME + tableName, "rw").getChannel().map(FileChannel.MapMode.READ_WRITE, 0, initialPages * PAGE_SIZE);
-    }
-
-
-    public HeapFile(String tableName) throws IOException {
-        File file = new File(DATA_FOLDER_NAME + tableName);
-        if (!file.exists())
-            throw new FileNotFoundException();
-        long size = file.length();
-
-        this.file = new RandomAccessFile(DATA_FOLDER_NAME + tableName, "rw");
-        buffer = this.file.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, size);
     }
 }

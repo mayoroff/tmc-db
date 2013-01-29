@@ -2,10 +2,10 @@ package org.tmcdb.parser.test;
 
 import com.sun.istack.internal.NotNull;
 import org.junit.Test;
-import org.tmcdb.engine.data.Column;
 import org.tmcdb.engine.data.NumericType;
 import org.tmcdb.engine.data.Type;
 import org.tmcdb.engine.data.VarChar;
+import org.tmcdb.engine.schema.Column;
 import org.tmcdb.parser.Parser;
 import org.tmcdb.parser.ParserException;
 import org.tmcdb.parser.instructions.CreateTableInstruction;
