@@ -1,10 +1,16 @@
 package org.tmcdb.engine.data;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 
 /**
  * @author Pavel Talanov
  */
-//TODO: think what methods belong here, getSize() for example
 public interface Type extends Serializable {
+
+    int getSize();
+
+    @NotNull
+    Object getDefaultValue();
 }

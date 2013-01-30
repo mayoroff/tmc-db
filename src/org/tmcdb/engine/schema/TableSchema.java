@@ -29,4 +29,12 @@ public final class TableSchema implements Serializable {
     public List<Column> getColumns() {
         return columns;
     }
+
+    public int getRowSize() {
+        int rowSize = 0;
+        for (Column column : columns) {
+            rowSize += column.getType().getSize();
+        }
+        return rowSize;
+    }
 }

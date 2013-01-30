@@ -36,4 +36,15 @@ public final class VarChar implements Type {
     public int hashCode() {
         return numberOfChars;
     }
+
+    @Override
+    public int getSize() {
+        return numberOfChars * (Character.SIZE / Byte.SIZE);
+    }
+
+    @NotNull
+    @Override
+    public Object getDefaultValue() {
+        return "";
+    }
 }
