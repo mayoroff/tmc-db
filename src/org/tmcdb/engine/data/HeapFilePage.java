@@ -1,5 +1,7 @@
 package org.tmcdb.engine.data;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.tmcdb.engine.schema.Column;
 
 import java.io.UnsupportedEncodingException;
@@ -20,7 +22,8 @@ public class HeapFilePage implements Page {
     }
 
     @Override
-    public Row getRecord(List<Column> columns, int rid) {
+    @Nullable
+    public Row getRecord(@NotNull List<Column> columns, int rid) {
         short step = 0;
         for (int i = 0; i < rid; ++i) {
             short currentStep = buffer.getShort(step);
@@ -28,10 +31,15 @@ public class HeapFilePage implements Page {
                 return null;
             step += currentStep;
         }
-        if (0 == buffer.getShort(step)) {
+        if (buffer.getShort(step) == 0) {
             return null;
         }
 
+        return new Row(columns, readValues(columns, step));
+    }
+
+    @NotNull
+    private List<Object> readValues(@NotNull List<Column> columns, short step) {
         List<Object> values = new ArrayList<Object>();
         for (int i = 0; i < columns.size(); ++i) {
             Type type = columns.get(i).getType();
@@ -52,17 +60,17 @@ public class HeapFilePage implements Page {
             }
 
         }
-        return new Row(columns, values);
+        return values;
     }
 
     @Override
-    public boolean insertRecord(Row record) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    public boolean insertRecord(@NotNull Row record) {
+        throw new UnsupportedOperationException("insertRecord");
     }
 
     @Override
     public void deleteRecord(int rid) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("deleteRecord");
     }
 
     public int numOfRows() {
