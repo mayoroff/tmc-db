@@ -64,7 +64,7 @@ public final class HeapFileTest {
 
     @Test
     public void testHeapFileCreation() throws IOException {
-        HeapFile.createHeapFile(TEST_DATA_DIR + "/test-creation", 16);
+        HeapFile.createEmptyHeapFile(TEST_DATA_DIR + "/test-creation", 16);
         assertTrue(new File(TEST_DATA_DIR + "/test-creation").exists());
         assertEquals(65536, new File(TEST_DATA_DIR + "/test-creation").length());
     }
@@ -81,7 +81,7 @@ public final class HeapFileTest {
 
     @Test
     public void getExistingPage() throws IOException {
-        HeapFile.createHeapFile(TEST_DATA_DIR + "/test-creation", 16);
+        HeapFile.createEmptyHeapFile(TEST_DATA_DIR + "/test-creation", 16);
         HeapFile dataFile = new HeapFile(TEST_DATA_DIR + "/test-creation", TEST_SIMPLE_SCHEMA);
         Page page = dataFile.getPage(15);
         assertNotNull(page);
@@ -90,7 +90,7 @@ public final class HeapFileTest {
 
     @Test
     public void getNonExistingRecord() throws IOException {
-        HeapFile.createHeapFile(TEST_DATA_DIR + "/test-creation", 16);
+        HeapFile.createEmptyHeapFile(TEST_DATA_DIR + "/test-creation", 16);
         HeapFile dataFile = new HeapFile(TEST_DATA_DIR + "/test-creation", TEST_SIMPLE_SCHEMA);
         Page page = dataFile.getPage(15);
         assertNull(page.getRecord(4));
@@ -99,7 +99,7 @@ public final class HeapFileTest {
 
     @Test
     public void insertRecordAndRetrieveRecord() throws Exception {
-        HeapFile.createHeapFile(TEST_DATA_DIR + "/test-insert", 16);
+        HeapFile.createEmptyHeapFile(TEST_DATA_DIR + "/test-insert", 16);
         HeapFile dataFile = new HeapFile(TEST_DATA_DIR + "/test-insert", TEST_SIMPLE_SCHEMA);
         Page page = dataFile.getPage(0);
         page.insertRecord(0, new Row(Collections.singletonList(DOUBLE_COLUMN), Collections.<Object>singletonList(3.0)));
@@ -113,7 +113,7 @@ public final class HeapFileTest {
 
     @Test
     public void insertMultipleColumns() throws Exception {
-        HeapFile.createHeapFile(TEST_DATA_DIR + "/test-insert-multiple-columns", 16);
+        HeapFile.createEmptyHeapFile(TEST_DATA_DIR + "/test-insert-multiple-columns", 16);
         HeapFile dataFile = new HeapFile(TEST_DATA_DIR + "/test-insert-multiple-columns", TEST_SIMPLE_SCHEMA);
         Page page = dataFile.getPage(0);
         List<Column> columns = new ArrayList<Column>();
@@ -148,7 +148,7 @@ public final class HeapFileTest {
 
     @Test
     public void dataPersists() throws Exception {
-        HeapFile.createHeapFile(TEST_DATA_DIR + "/test-persists", 16);
+        HeapFile.createEmptyHeapFile(TEST_DATA_DIR + "/test-persists", 16);
         HeapFile dataFile = new HeapFile(TEST_DATA_DIR + "/test-persists", TEST_SIMPLE_SCHEMA);
         Page page = dataFile.getPage(0);
         List<Column> columns = new ArrayList<Column>();
@@ -186,7 +186,7 @@ public final class HeapFileTest {
 
     @Test
     public void defaultValues() throws Exception {
-        HeapFile.createHeapFile(TEST_DATA_DIR + "/test-default-values", 16);
+        HeapFile.createEmptyHeapFile(TEST_DATA_DIR + "/test-default-values", 16);
         HeapFile dataFile = new HeapFile(TEST_DATA_DIR + "/test-default-values", TEST_SIMPLE_SCHEMA);
         Page page = dataFile.getPage(0);
         Row record = new Row(Collections.<Column>emptyList(), Collections.emptyList());
@@ -219,7 +219,7 @@ public final class HeapFileTest {
         Column column2 = new Column("str2", new VarChar(30));
         columns.add(column2);
         TableSchema varcharSchema = new TableSchema("testVarchar", columns);
-        HeapFile.createHeapFile(TEST_DATA_DIR + "/test-varchar", 16);
+        HeapFile.createEmptyHeapFile(TEST_DATA_DIR + "/test-varchar", 16);
         HeapFile dataFile = new HeapFile(TEST_DATA_DIR + "/test-varchar", varcharSchema);
         Page page = dataFile.getPage(0);
         ArrayList<Object> values = new ArrayList<Object>();
@@ -249,8 +249,11 @@ public final class HeapFileTest {
         final File[] files = folder.listFiles();
         assert files != null;
         for (File f : files) {
+            //behaves very strange sometimes
             boolean success = f.delete();
-            assertTrue("Could not delete " + f.getAbsolutePath(), success);
+            while (!success) {
+                success = f.delete();
+            }
         }
     }
 

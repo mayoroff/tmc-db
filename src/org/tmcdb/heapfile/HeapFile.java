@@ -19,11 +19,13 @@ import java.util.Map;
  */
 public class HeapFile implements DataFile {
 
+    public static final int DEFAULT_INITIAL_PAGES = 16;
+    public static final int PAGE_SIZE = 4096;
+
     @NotNull
     private final MappedByteBuffer buffer;
     @NotNull
     private final RandomAccessFile file;
-    static final int PAGE_SIZE = 4096;
     @NotNull
     private final TableSchema tableSchema;
     @NotNull
@@ -66,7 +68,11 @@ public class HeapFile implements DataFile {
         }
     }
 
-    public static void createHeapFile(String path, int initialPages) throws IOException {
+    public static void createEmptyHeapFile(String path) throws IOException {
+        createEmptyHeapFile(path, DEFAULT_INITIAL_PAGES);
+    }
+
+    public static void createEmptyHeapFile(String path, int initialPages) throws IOException {
         RandomAccessFile file = new RandomAccessFile(path, "rw");
         file.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, initialPages * PAGE_SIZE);
         file.close();
