@@ -12,6 +12,7 @@ import org.tmcdb.engine.schema.TableSchema;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.tmcdb.heapfile.HeapFile.PAGE_SIZE;
@@ -28,6 +29,8 @@ import static org.tmcdb.heapfile.HeapFile.PAGE_SIZE;
  * One slot can contain one row of the table
  */
 public class HeapFilePage implements Page {
+
+    private static final byte VARCHAR_PLACEHOLDER_VALUE = 0;
 
     @NotNull
     private final ByteBuffer buffer;
@@ -70,17 +73,29 @@ public class HeapFilePage implements Page {
                 values.add(buffer.getDouble());
             } else {
                 assert type instanceof VarChar;
-                byte[] strData = new byte[type.getSize()];
-                buffer.get(strData);
-                try {
-                    values.add(new String(strData, "UTF-8"));
-                } catch (UnsupportedEncodingException e) {
-                    values.add(null);
-                    e.printStackTrace();
-                }
+                values.add(readVarchar((VarChar) type));
             }
         }
         return values;
+    }
+
+    @Nullable
+    private String readVarchar(@NotNull VarChar type) {
+        byte[] strData = new byte[type.getSize()];
+        buffer.get(strData);
+        int meaningfulBytesCount = 0;
+        for (int i = 0; i < strData.length; ++i, ++meaningfulBytesCount) {
+            if (strData[i] == VARCHAR_PLACEHOLDER_VALUE) {
+                break;
+            }
+        }
+        byte[] meaningfulBytes = Arrays.copyOf(strData, meaningfulBytesCount);
+        try {
+            return new String(meaningfulBytes, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -108,12 +123,20 @@ public class HeapFilePage implements Page {
                 buffer.putDouble((Double) valueForColumn);
             } else {
                 assert type instanceof VarChar;
-                String stringValue = (String) valueForColumn;
-                //TODO: charset?
-                //TODO: correct number of bytes
-                buffer.put(stringValue.getBytes());
+                writeVarChar((String) valueForColumn, (VarChar) type);
             }
         }
+    }
+
+    private void writeVarChar(@NotNull String valueForColumn, @NotNull VarChar type) {
+        assert valueForColumn.length() <= type.getNumberOfChars();
+        //TODO: charset?
+        byte[] meaningfulBytes = valueForColumn.getBytes();
+        int numberOfBytesToWrite = type.getNumberOfChars() * (Character.SIZE / Byte.SIZE);
+        buffer.put(meaningfulBytes);
+        byte[] placeHolderBytes = new byte[numberOfBytesToWrite - meaningfulBytes.length];
+        Arrays.fill(placeHolderBytes, VARCHAR_PLACEHOLDER_VALUE);
+        buffer.put(placeHolderBytes);
     }
 
     private void checkRecordIsCorrect(@NotNull Row record) {

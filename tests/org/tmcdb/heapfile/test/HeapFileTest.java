@@ -5,6 +5,7 @@ import org.junit.AfterClass;
 import org.junit.Test;
 import org.tmcdb.engine.data.NumericType;
 import org.tmcdb.engine.data.Row;
+import org.tmcdb.engine.data.VarChar;
 import org.tmcdb.engine.schema.Column;
 import org.tmcdb.engine.schema.TableSchema;
 import org.tmcdb.heapfile.HeapFile;
@@ -14,6 +15,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,8 +25,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Created by Arseny Mayorov.
- * Date: 22.10.12
+ * @author Arseny Mayorov
+ * @author Pavel Talanov
  */
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public final class HeapFileTest {
@@ -97,8 +99,8 @@ public final class HeapFileTest {
 
     @Test
     public void insertRecordAndRetrieveRecord() throws Exception {
-        HeapFile.createHeapFile("test-insert", 16);
-        HeapFile dataFile = new HeapFile("test-insert", TEST_SIMPLE_SCHEMA);
+        HeapFile.createHeapFile(TEST_DATA_DIR + "/test-insert", 16);
+        HeapFile dataFile = new HeapFile(TEST_DATA_DIR + "/test-insert", TEST_SIMPLE_SCHEMA);
         Page page = dataFile.getPage(0);
         page.insertRecord(0, new Row(Collections.singletonList(DOUBLE_COLUMN), Collections.<Object>singletonList(3.0)));
         Row record = page.getRecord(0);
@@ -106,12 +108,13 @@ public final class HeapFileTest {
         assertEquals(TEST_SIMPLE_SCHEMA.getColumns().size(), record.getColumns().size());
         assertEquals(3.0, record.getValueForColumn(DOUBLE_COLUMN));
         dataFile.deinitialize();
+        assertEquals(65536, new File(TEST_DATA_DIR + "/test-insert").length());
     }
 
     @Test
     public void insertMultipleColumns() throws Exception {
-        HeapFile.createHeapFile("test-insert-multiple-columns", 16);
-        HeapFile dataFile = new HeapFile("test-insert-multiple-columns", TEST_SIMPLE_SCHEMA);
+        HeapFile.createHeapFile(TEST_DATA_DIR + "/test-insert-multiple-columns", 16);
+        HeapFile dataFile = new HeapFile(TEST_DATA_DIR + "/test-insert-multiple-columns", TEST_SIMPLE_SCHEMA);
         Page page = dataFile.getPage(0);
         List<Column> columns = new ArrayList<Column>();
         columns.add(DOUBLE_COLUMN);
@@ -140,12 +143,13 @@ public final class HeapFileTest {
         }
 
         dataFile.deinitialize();
+        assertEquals(65536, new File(TEST_DATA_DIR + "/test-insert-multiple-columns").length());
     }
 
     @Test
     public void dataPersists() throws Exception {
-        HeapFile.createHeapFile("test-insert-multiple-columns", 16);
-        HeapFile dataFile = new HeapFile("test-insert-multiple-columns", TEST_SIMPLE_SCHEMA);
+        HeapFile.createHeapFile(TEST_DATA_DIR + "/test-persists", 16);
+        HeapFile dataFile = new HeapFile(TEST_DATA_DIR + "/test-persists", TEST_SIMPLE_SCHEMA);
         Page page = dataFile.getPage(0);
         List<Column> columns = new ArrayList<Column>();
         columns.add(DOUBLE_COLUMN);
@@ -166,7 +170,8 @@ public final class HeapFileTest {
             page.insertRecord(slot, record);
         }
         dataFile.deinitialize();
-        dataFile = new HeapFile("test-insert-multiple-columns", TEST_SIMPLE_SCHEMA);
+        assertEquals(65536, new File(TEST_DATA_DIR + "/test-persists").length());
+        dataFile = new HeapFile(TEST_DATA_DIR + "/test-persists", TEST_SIMPLE_SCHEMA);
         for (Integer slot : slots) {
             record = page.getRecord(slot);
             assertNotNull(record);
@@ -176,6 +181,65 @@ public final class HeapFileTest {
         }
 
         dataFile.deinitialize();
+        assertEquals(65536, new File(TEST_DATA_DIR + "/test-persists").length());
+    }
+
+    @Test
+    public void defaultValues() throws Exception {
+        HeapFile.createHeapFile(TEST_DATA_DIR + "/test-default-values", 16);
+        HeapFile dataFile = new HeapFile(TEST_DATA_DIR + "/test-default-values", TEST_SIMPLE_SCHEMA);
+        Page page = dataFile.getPage(0);
+        Row record = new Row(Collections.<Column>emptyList(), Collections.emptyList());
+        List<Integer> slots = new ArrayList<Integer>();
+        slots.add(3);
+        slots.add(7);
+        slots.add(5);
+        slots.add(2);
+        slots.add(10);
+        for (Integer slot : slots) {
+            page.insertRecord(slot, record);
+        }
+        for (Integer slot : slots) {
+            record = page.getRecord(slot);
+            assertNotNull(record);
+            assertEquals(TEST_SIMPLE_SCHEMA.getColumns().size(), record.getColumns().size());
+            assertEquals(NumericType.DOUBLE.getDefaultValue(), record.getValueForColumn(DOUBLE_COLUMN));
+            assertEquals(NumericType.INT.getDefaultValue(), record.getValueForColumn(INT_COLUMN));
+        }
+
+        assertEquals(65536, new File(TEST_DATA_DIR + "/test-default-values").length());
+        dataFile.deinitialize();
+    }
+
+    @Test
+    public void insertingAndReadingVarcharValues() throws Exception {
+        ArrayList<Column> columns = new ArrayList<Column>();
+        Column column1 = new Column("str1", new VarChar(20));
+        columns.add(column1);
+        Column column2 = new Column("str2", new VarChar(30));
+        columns.add(column2);
+        TableSchema varcharSchema = new TableSchema("testVarchar", columns);
+        HeapFile.createHeapFile(TEST_DATA_DIR + "/test-varchar", 16);
+        HeapFile dataFile = new HeapFile(TEST_DATA_DIR + "/test-varchar", varcharSchema);
+        Page page = dataFile.getPage(0);
+        ArrayList<Object> values = new ArrayList<Object>();
+        values.add("aaa");
+        values.add("bbbbb");
+        Row record = new Row(varcharSchema.getColumns(), values);
+        boolean inserted = page.insertRecord(2, record);
+        assertTrue(inserted);
+        record = page.getRecord(2);
+        assertEquals("aaa", record.getValueForColumn(column1));
+        assertEquals("bbbbb", record.getValueForColumn(column2));
+
+        inserted = page.insertRecord(5, new Row(varcharSchema.getColumns(), Arrays.<Object>asList(" some string ", "  some other string  ")));
+        Assert.assertTrue(inserted);
+        record = page.getRecord(5);
+        assertEquals(" some string ", record.getValueForColumn(column1));
+        assertEquals("  some other string  ", record.getValueForColumn(column2));
+
+        dataFile.deinitialize();
+        assertEquals(65536, new File(TEST_DATA_DIR + "/test-varchar").length());
     }
 
     @AfterClass
