@@ -3,6 +3,7 @@ package org.tmcdb.heapfile;
 import org.jetbrains.annotations.NotNull;
 import org.tmcdb.engine.schema.TableSchema;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,16 +14,16 @@ import java.util.Map;
 public final class HeapFileManager {
 
     @NotNull
-    private final String dataDir;
+    private final File dataDir;
     @NotNull
     private final Map<TableSchema, HeapFile> fileBySchema = new HashMap<TableSchema, HeapFile>();
 
-    public HeapFileManager(@NotNull String dataDir) {
+    public HeapFileManager(@NotNull File dataDir) {
         this.dataDir = dataDir;
     }
 
     @NotNull
-    public HeapFile getFile(@NotNull TableSchema schema) {
+    public HeapFile getExistingFile(@NotNull TableSchema schema) {
         HeapFile heapFile = fileBySchema.get(schema);
         if (heapFile != null) {
             return heapFile;
@@ -32,7 +33,14 @@ public final class HeapFileManager {
             fileBySchema.put(schema, heapFile);
             return heapFile;
         } catch (IOException e) {
+            //TODO: better exception?
             throw new RuntimeException("Error reading file " + pathForSchema(schema), e);
+        }
+    }
+
+    public void deinitialize() {
+        for (HeapFile heapFile : fileBySchema.values()) {
+            heapFile.deinitialize();
         }
     }
 
@@ -44,8 +52,9 @@ public final class HeapFileManager {
         }
     }
 
-    private String pathForSchema(TableSchema schema) {
-        return dataDir + "/" + schema.getTableName();
+    @NotNull
+    private String pathForSchema(@NotNull TableSchema schema) {
+        return dataDir.getAbsolutePath() + "/" + schema.getTableName() + ".data";
     }
 
 

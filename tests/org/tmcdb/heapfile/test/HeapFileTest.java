@@ -23,6 +23,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.tmcdb.utils.TestUtils.cleanDirectory;
 
 /**
  * @author Arseny Mayorov
@@ -244,17 +245,7 @@ public final class HeapFileTest {
 
     @AfterClass
     public static void cleanup() throws IOException {
-        System.gc();
-        File folder = new File(TEST_DATA_DIR);
-        final File[] files = folder.listFiles();
-        assert files != null;
-        for (File f : files) {
-            //behaves very strange sometimes
-            boolean success = f.delete();
-            while (!success) {
-                success = f.delete();
-            }
-        }
+        cleanDirectory(TEST_DATA_DIR);
     }
 
 }
