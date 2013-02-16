@@ -70,16 +70,6 @@ public final class HeapFileTest {
         assertEquals(65536, new File(TEST_DATA_DIR + "/test-creation").length());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getNonExistingPage() throws IOException {
-        HeapFile dataFile = new HeapFile(TEST_DATA_DIR + "/exists", TEST_SIMPLE_SCHEMA);
-        try {
-            dataFile.getPage(0);
-        } finally {
-            dataFile.deinitialize();
-        }
-    }
-
     @Test
     public void getExistingPage() throws IOException {
         HeapFile.createEmptyHeapFile(TEST_DATA_DIR + "/test-creation", 16);

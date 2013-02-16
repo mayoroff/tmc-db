@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.HashMap;
@@ -23,8 +22,6 @@ public class HeapFile implements DataFile {
     public static final int PAGE_SIZE = 4096;
 
     @NotNull
-    private final MappedByteBuffer buffer;
-    @NotNull
     private final RandomAccessFile file;
     @NotNull
     private final TableSchema tableSchema;
@@ -37,25 +34,26 @@ public class HeapFile implements DataFile {
         if (!file.exists()) {
             throw new FileNotFoundException();
         }
-        long size = file.length();
-
         this.file = new RandomAccessFile(pathToFile, "rw");
-        this.buffer = this.file.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, size);
     }
 
+    /*
+        Creates page if it doesn't exist
+     */
     @Override
-    public Page getPage(int pageId) throws IllegalArgumentException {
-        if ((pageId + 1) * PAGE_SIZE > buffer.capacity()) {
-            throw new IllegalArgumentException();
-        }
+    public Page getPage(int pageId) throws IOException {
         HeapFilePage page = idToPage.get(pageId);
         if (page != null) {
             return page;
         }
-        buffer.position(pageId * PAGE_SIZE);
-        ByteBuffer pageBuffer = buffer.slice();
+        return createPage(pageId);
+    }
+
+    @NotNull
+    private Page createPage(int pageId) throws IOException {
+        MappedByteBuffer pageBuffer = file.getChannel().map(FileChannel.MapMode.READ_WRITE, pageId * PAGE_SIZE, PAGE_SIZE);
         pageBuffer.limit(PAGE_SIZE);
-        page = new HeapFilePage(pageBuffer, tableSchema);
+        HeapFilePage page = new HeapFilePage(pageBuffer, tableSchema);
         idToPage.put(pageId, page);
         return page;
     }
