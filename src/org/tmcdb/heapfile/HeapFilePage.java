@@ -158,12 +158,14 @@ public class HeapFilePage implements Page {
     }
 
     private boolean isOccupied(int slotId) {
-        return getIsOccupied(getBitMask(), slotId);
+        assert slotId < slotsNumber;
+        return BitMaskUtils.getIsOccupied(getBitMask(), slotId);
     }
 
     private void setIsOccupied(int slotId, boolean isOccupied) {
         byte[] bitMask = getBitMask();
-        setIsOccupied(bitMask, slotId, isOccupied);
+        assert slotId < slotsNumber;
+        BitMaskUtils.setIsOccupied(bitMask, slotId, isOccupied);
         writeBitMask(bitMask);
     }
 
@@ -179,30 +181,4 @@ public class HeapFilePage implements Page {
         buffer.put(bitMask);
     }
 
-    private boolean getIsOccupied(byte[] bitMask, int slotNumber) {
-        assert slotNumber < slotsNumber;
-        assert bitMask.length >= slotNumber / 8;
-        int byteNumber = slotNumber / 8;
-        int bitNumber = slotNumber % 8;
-        int mask = 1 << bitNumber;
-        int value = bitMask[byteNumber];
-        return (value & mask) != 0;
-    }
-
-    private void setIsOccupied(byte[] bitMask, int slotNumber, boolean isOccupied) {
-        assert slotNumber < slotsNumber;
-        assert bitMask.length >= slotNumber / 8;
-        int byteNumber = slotNumber / 8;
-        int bitNumber = slotNumber % 8;
-        int mask = 1 << bitNumber;
-        int value = bitMask[byteNumber];
-        //TODO: test this code more, not really sure it's the right way to implement bitmasks
-        if (isOccupied) {
-            // assert (value | mask) <= Byte.MAX_VALUE;
-            bitMask[byteNumber] = (byte) (value | mask);
-        } else {
-            //   assert (value & mask) <= Byte.MAX_VALUE;
-            bitMask[byteNumber] = (byte) (value & ~mask);
-        }
-    }
 }
