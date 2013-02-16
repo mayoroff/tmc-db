@@ -8,18 +8,21 @@ import org.tmcdb.engine.data.Type;
 import org.tmcdb.engine.data.VarChar;
 import org.tmcdb.engine.schema.Column;
 import org.tmcdb.engine.schema.TableSchema;
+import org.tmcdb.heapfile.cursor.Cursor;
+import org.tmcdb.heapfile.cursor.HeapFilePageCursor;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import static org.tmcdb.heapfile.HeapFile.PAGE_SIZE;
 
 /**
- * @author: Arseny Mayorov
- * @author: Pavel Talanov
+ * @author Arseny Mayorov
+ * @author Pavel Talanov
  */
 
 /**
@@ -181,4 +184,13 @@ public class HeapFilePage implements Page {
         buffer.put(bitMask);
     }
 
+    @NotNull
+    public Collection<Integer> getOccupiedSlots() {
+        return BitMaskUtils.getAllOccupiedSlots(getBitMask(), slotsNumber);
+    }
+
+    @NotNull
+    public Cursor getCursor() {
+        return new HeapFilePageCursor(this);
+    }
 }
