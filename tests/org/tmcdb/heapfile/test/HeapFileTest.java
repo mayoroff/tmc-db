@@ -10,6 +10,7 @@ import org.tmcdb.engine.schema.Column;
 import org.tmcdb.engine.schema.TableSchema;
 import org.tmcdb.heapfile.HeapFile;
 import org.tmcdb.heapfile.Page;
+import org.tmcdb.heapfile.cursor.Cursor;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -202,6 +203,7 @@ public final class HeapFileTest {
         dataFile.deinitialize();
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Test
     public void insertingAndReadingVarcharValues() throws Exception {
         ArrayList<Column> columns = new ArrayList<Column>();
@@ -231,6 +233,30 @@ public final class HeapFileTest {
 
         dataFile.deinitialize();
         assertEquals(65536, new File(TEST_DATA_DIR + "/test-varchar").length());
+    }
+
+
+    @Test
+    public void cursorForOnePage() throws Exception {
+        HeapFile.createEmptyHeapFile(TEST_DATA_DIR + "/test-cursor1", 16);
+        HeapFile dataFile = new HeapFile(TEST_DATA_DIR + "/test-cursor1", TEST_SIMPLE_SCHEMA);
+        Page page = dataFile.getPage(0);
+        Row record = new Row(Collections.singletonList(DOUBLE_COLUMN), Collections.<Object>singletonList(3.0));
+        page.insertRecord(0, record);
+        page.insertRecord(3, record);
+        page.insertRecord(100, record);
+        Cursor cursor = page.getCursor();
+        int records = 0;
+        for (Row extractedRecord = cursor.next(); extractedRecord != null; extractedRecord = cursor.next(), ++records) {
+            assertNotNull(extractedRecord);
+            assertEquals(TEST_SIMPLE_SCHEMA.getColumns().size(), extractedRecord.getColumns().size());
+            assertEquals(3.0, extractedRecord.getValueForColumn(DOUBLE_COLUMN));
+        }
+        assertEquals(3, records);
+        assertNull(dataFile.getPage(2).getCursor().next());
+        assertNull(dataFile.getPage(3).getCursor().next());
+        dataFile.deinitialize();
+        assertEquals(65536, new File(TEST_DATA_DIR + "/test-insert").length());
     }
 
     @AfterClass
