@@ -16,7 +16,7 @@ import java.util.Map;
  * @author Arseny Mayorov
  * @author Pavel Talanov
  */
-public class HeapFile implements DataFile {
+public class HeapFile {
 
     public static final int DEFAULT_INITIAL_PAGES = 16;
     public static final int PAGE_SIZE = 4096;
@@ -40,7 +40,6 @@ public class HeapFile implements DataFile {
     /*
         Creates page if it doesn't exist
      */
-    @Override
     public Page getPage(int pageId) throws IOException {
         HeapFilePage page = idToPage.get(pageId);
         if (page != null) {
