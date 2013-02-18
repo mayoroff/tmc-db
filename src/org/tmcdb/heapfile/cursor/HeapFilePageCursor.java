@@ -1,6 +1,7 @@
 package org.tmcdb.heapfile.cursor;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.tmcdb.engine.data.Row;
 import org.tmcdb.heapfile.HeapFilePage;
 
@@ -11,8 +12,8 @@ import java.util.Iterator;
  */
 public final class HeapFilePageCursor implements Cursor {
 
-    @NotNull
-    private final HeapFilePage page;
+    @Nullable
+    private HeapFilePage page;
     @NotNull
     private final Iterator<Integer> occupiedSlotsIterator;
 
@@ -23,10 +24,16 @@ public final class HeapFilePageCursor implements Cursor {
 
     @Override
     public Row next() {
+        assert page != null : "Cursor already closed";
         if (occupiedSlotsIterator.hasNext()) {
             return page.getRecord(occupiedSlotsIterator.next());
         } else {
             return null;
         }
+    }
+
+    @Override
+    public void close() {
+        page = null;
     }
 }

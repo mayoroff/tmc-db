@@ -9,4 +9,6 @@ import org.tmcdb.engine.data.Row;
 public interface Cursor {
     @Nullable
     Row next();
+
+    void close();
 }
