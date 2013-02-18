@@ -12,6 +12,9 @@ import java.io.PrintStream;
  */
 public final class CursorUtils {
 
+    private CursorUtils() {
+    }
+
     public static void toCSV(@NotNull Cursor cursor, @NotNull PrintStream output) throws IOException {
         Row row = cursor.next();
         while (row != null) {

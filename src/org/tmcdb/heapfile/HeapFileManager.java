@@ -8,17 +8,22 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.tmcdb.utils.DirectoryUtils.checkIsDirectory;
+
 /**
  * @author Pavel Talanov
  */
 public final class HeapFileManager {
 
     @NotNull
+    private static final String HEAP_FILE_EXT = ".data";
+    @NotNull
     private final File dataDir;
     @NotNull
     private final Map<TableSchema, HeapFile> fileBySchema = new HashMap<TableSchema, HeapFile>();
 
     public HeapFileManager(@NotNull File dataDir) {
+        checkIsDirectory(dataDir);
         this.dataDir = dataDir;
     }
 
@@ -54,7 +59,7 @@ public final class HeapFileManager {
 
     @NotNull
     private String pathForSchema(@NotNull TableSchema schema) {
-        return dataDir.getAbsolutePath() + "/" + schema.getTableName() + ".data";
+        return dataDir.getAbsolutePath() + "/" + schema.getTableName() + HEAP_FILE_EXT;
     }
 
 

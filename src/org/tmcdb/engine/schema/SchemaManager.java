@@ -7,6 +7,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.tmcdb.utils.DirectoryUtils.checkIsDirectory;
+
 /**
  * @author Pavel Talanov
  */
@@ -17,9 +19,7 @@ public final class SchemaManager {
     private List<TableSchema> tables = null;
 
     public SchemaManager(@NotNull File schemasDir) {
-        if (!schemasDir.isDirectory()) {
-            throw new IllegalArgumentException(schemasDir.getAbsolutePath() + " is not a directory");
-        }
+        checkIsDirectory(schemasDir);
         this.schemasDir = schemasDir;
     }
 

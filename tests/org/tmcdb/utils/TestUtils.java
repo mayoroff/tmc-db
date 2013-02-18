@@ -8,6 +8,10 @@ import java.io.File;
  * @author Pavel Talanov
  */
 public final class TestUtils {
+
+    private TestUtils() {
+    }
+
     public static void cleanDirectory(@NotNull String directory) {
         System.gc();
         File folder = new File(directory);
