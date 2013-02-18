@@ -2,6 +2,8 @@ package org.tmcdb.heapfile;
 
 import org.jetbrains.annotations.NotNull;
 import org.tmcdb.engine.schema.TableSchema;
+import org.tmcdb.heapfile.cursor.Cursor;
+import org.tmcdb.heapfile.cursor.HeapFileCursor;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -63,6 +65,18 @@ public class HeapFile {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public int pagesNumber() throws IOException {
+        long fileSize = file.getChannel().size();
+        assert fileSize != 0;
+        assert fileSize % PAGE_SIZE == 0;
+        return (int) (fileSize / PAGE_SIZE);
+    }
+
+    @NotNull
+    public Cursor getCursor() throws IOException {
+        return new HeapFileCursor(this);
     }
 
     public static void createEmptyHeapFile(String path) throws IOException {

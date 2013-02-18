@@ -2,6 +2,7 @@ package org.tmcdb.heapfile.test;
 
 import junit.framework.Assert;
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.tmcdb.engine.data.NumericType;
 import org.tmcdb.engine.data.Row;
@@ -256,7 +257,36 @@ public final class HeapFileTest {
         assertNull(dataFile.getPage(2).getCursor().next());
         assertNull(dataFile.getPage(3).getCursor().next());
         dataFile.deinitialize();
-        assertEquals(65536, new File(TEST_DATA_DIR + "/test-insert").length());
+    }
+
+    @Test
+    public void fileCursor() throws Exception {
+        HeapFile.createEmptyHeapFile(TEST_DATA_DIR + "/test-cursor2", 16);
+        HeapFile dataFile = new HeapFile(TEST_DATA_DIR + "/test-cursor2", TEST_SIMPLE_SCHEMA);
+        for (int i = 0; i < 13; ++i) {
+            Page page = dataFile.getPage(i);
+            Row record = new Row(Collections.singletonList(DOUBLE_COLUMN), Collections.<Object>singletonList(3.0));
+            page.insertRecord(0, record);
+            page.insertRecord(3, record);
+            page.insertRecord(100, record);
+        }
+        Cursor cursor = dataFile.getCursor();
+        int records = 0;
+        for (Row extractedRecord = cursor.next(); extractedRecord != null; extractedRecord = cursor.next(), ++records) {
+            assertNotNull(extractedRecord);
+            assertEquals(TEST_SIMPLE_SCHEMA.getColumns().size(), extractedRecord.getColumns().size());
+            assertEquals(3.0, extractedRecord.getValueForColumn(DOUBLE_COLUMN));
+        }
+        assertEquals(13 * 3, records);
+        assertNull(dataFile.getPage(13).getCursor().next());
+        assertNull(dataFile.getPage(15).getCursor().next());
+        dataFile.deinitialize();
+    }
+
+    @BeforeClass
+    public static void prepare() throws IOException {
+        new File(TEST_DATA_DIR).mkdirs();
+        cleanup();
     }
 
     @AfterClass
