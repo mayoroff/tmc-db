@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.tmcdb.engine.data.Row;
 import org.tmcdb.engine.schema.Column;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
@@ -21,6 +22,13 @@ public final class CursorUtils {
             output.println(rowToCSV(row));
             row = cursor.next();
         }
+    }
+
+    @NotNull
+    public static String toString(@NotNull Cursor cursor) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        toCSV(cursor, new PrintStream(outputStream));
+        return outputStream.toString();
     }
 
     @NotNull

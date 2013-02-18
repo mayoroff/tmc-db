@@ -5,18 +5,21 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.tmcdb.utils.DirectoryUtils.checkIsDirectory;
 
 /**
  * @author Pavel Talanov
  */
+@SuppressWarnings("ConstantConditions")
 public final class SchemaManager {
     @NotNull
     private final File schemasDir;
     @Nullable
-    private List<TableSchema> tables = null;
+    private Map<String, TableSchema> tableNameToSchema = null;
 
     public SchemaManager(@NotNull File schemasDir) {
         checkIsDirectory(schemasDir);
@@ -28,10 +31,11 @@ public final class SchemaManager {
         if (files == null) {
             throw new IllegalStateException("Error reading schemas");
         }
-        tables = new ArrayList<TableSchema>();
+        tableNameToSchema = new HashMap<String, TableSchema>();
         for (File file : files) {
             if (file.isFile()) {
-                tables.add(readSchema(file));
+                TableSchema tableSchema = readSchema(file);
+                tableNameToSchema.put(tableSchema.getTableName(), tableSchema);
             } else {
                 throw new IllegalStateException("Schema directory content is corrupted");
             }
@@ -64,8 +68,8 @@ public final class SchemaManager {
     }
 
     private void writeSchemas() {
-        assert tables != null : "Initialize() was not called or failed.";
-        for (TableSchema table : tables) {
+        checkInitialized();
+        for (TableSchema table : tableNameToSchema.values()) {
             File schemaFile = new File(schemasDir, table.getTableName());
             try {
                 FileOutputStream fileOutputStream = new FileOutputStream(schemaFile);
@@ -88,13 +92,23 @@ public final class SchemaManager {
 
     @NotNull
     public List<TableSchema> getAllTables() {
-        assert tables != null : "Initialize() was not called or failed.";
-        return new ArrayList<TableSchema>(tables);
+        checkInitialized();
+        return new ArrayList<TableSchema>(tableNameToSchema.values());
+    }
+
+    private void checkInitialized() {
+        assert tableNameToSchema != null : "Initialize() was not called or failed.";
+    }
+
+    @Nullable
+    public TableSchema getSchema(@NotNull String tableName) {
+        checkInitialized();
+        return tableNameToSchema.get(tableName);
     }
 
     public void addNewSchema(@NotNull TableSchema schema) {
         //TODO: check for duplication
-        assert tables != null : "Initialize() was not called or failed.";
-        tables.add(schema);
+        checkInitialized();
+        tableNameToSchema.put(schema.getTableName(), schema);
     }
 }

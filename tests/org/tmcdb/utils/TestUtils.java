@@ -19,6 +19,9 @@ public final class TestUtils {
         assert files != null;
         for (File f : files) {
             //behaves very strange sometimes
+            if (f.isDirectory()) {
+                cleanDirectory(f.getAbsolutePath());
+            }
             boolean success = f.delete();
             while (!success) {
                 success = f.delete();
