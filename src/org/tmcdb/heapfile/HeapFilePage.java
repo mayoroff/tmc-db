@@ -193,4 +193,9 @@ public class HeapFilePage implements Page {
     public Cursor getCursor() {
         return new HeapFilePageCursor(this);
     }
+
+    @NotNull
+    public Collection<Integer> getEmptySlots() {
+        return BitMaskUtils.getAllNonOccupiedSlots(getBitMask(), slotsNumber);
+    }
 }

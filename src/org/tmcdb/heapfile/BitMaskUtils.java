@@ -50,4 +50,18 @@ public final class BitMaskUtils {
         }
         return result;
     }
+
+    @NotNull
+    public static Collection<Integer> getAllNonOccupiedSlots(byte[] bitMask, int slotsNumber) {
+        Collection<Integer> result = new ArrayList<Integer>();
+        for (int slotNumber = 0; slotNumber < slotsNumber; ++slotNumber) {
+            int byteNumber = slotNumber / SIZE;
+            int bitNumber = slotNumber % SIZE;
+            int mask = 1 << bitNumber;
+            if ((bitMask[byteNumber] & mask) == 0) {
+                result.add(slotNumber);
+            }
+        }
+        return result;
+    }
 }

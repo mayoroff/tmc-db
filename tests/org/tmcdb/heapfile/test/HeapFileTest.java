@@ -283,6 +283,26 @@ public final class HeapFileTest {
         dataFile.deinitialize();
     }
 
+    @Test
+    public void heapFileInsert() throws Exception {
+        HeapFile.createEmptyHeapFile(TEST_DATA_DIR + "/test-insert1", 1);
+        HeapFile dataFile = new HeapFile(TEST_DATA_DIR + "/test-insert1", TEST_SIMPLE_SCHEMA);
+        int RECORDS_INSERTED = 10000;
+        for (int i = 0; i < RECORDS_INSERTED; ++i) {
+            Row record = new Row(Collections.singletonList(DOUBLE_COLUMN), Collections.<Object>singletonList((double) i));
+            dataFile.insertRecord(record);
+        }
+        Cursor cursor = dataFile.getCursor();
+        int records = 0;
+        for (Row extractedRecord = cursor.next(); extractedRecord != null; extractedRecord = cursor.next(), ++records) {
+            assertNotNull(extractedRecord);
+            assertEquals(TEST_SIMPLE_SCHEMA.getColumns().size(), extractedRecord.getColumns().size());
+            assertEquals((double) records, extractedRecord.getValueForColumn(DOUBLE_COLUMN));
+        }
+        assertEquals(RECORDS_INSERTED, records);
+        dataFile.deinitialize();
+    }
+
     @BeforeClass
     public static void prepare() throws IOException {
         new File(TEST_DATA_DIR).mkdirs();

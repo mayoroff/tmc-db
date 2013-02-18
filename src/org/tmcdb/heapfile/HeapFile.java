@@ -1,6 +1,7 @@
 package org.tmcdb.heapfile;
 
 import org.jetbrains.annotations.NotNull;
+import org.tmcdb.engine.data.Row;
 import org.tmcdb.engine.schema.TableSchema;
 import org.tmcdb.heapfile.cursor.Cursor;
 import org.tmcdb.heapfile.cursor.HeapFileCursor;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,7 +44,7 @@ public class HeapFile {
     /*
         Creates page if it doesn't exist
      */
-    public Page getPage(int pageId) throws IOException {
+    public HeapFilePage getPage(int pageId) throws IOException {
         HeapFilePage page = idToPage.get(pageId);
         if (page != null) {
             return page;
@@ -51,7 +53,7 @@ public class HeapFile {
     }
 
     @NotNull
-    private Page createPage(int pageId) throws IOException {
+    private HeapFilePage createPage(int pageId) throws IOException {
         MappedByteBuffer pageBuffer = file.getChannel().map(FileChannel.MapMode.READ_WRITE, pageId * PAGE_SIZE, PAGE_SIZE);
         pageBuffer.limit(PAGE_SIZE);
         HeapFilePage page = new HeapFilePage(pageBuffer, tableSchema);
@@ -77,6 +79,27 @@ public class HeapFile {
     @NotNull
     public Cursor getCursor() throws IOException {
         return new HeapFileCursor(this);
+    }
+
+    public void insertRecord(@NotNull Row record) throws IOException {
+        RecordId emptySlot = findEmptySlot();
+        getPage(emptySlot.getPageId()).insertRecord(emptySlot.getSlotNumber(), record);
+    }
+
+    @NotNull
+    private RecordId findEmptySlot() throws IOException {
+        for (int pageNumber = 0; pageNumber < pagesNumber(); ++pageNumber) {
+            HeapFilePage page = getPage(pageNumber);
+            Collection<Integer> emptySlots = page.getEmptySlots();
+            if (!emptySlots.isEmpty()) {
+                Integer slotNumber = emptySlots.iterator().next();
+                return new RecordId(pageNumber, slotNumber);
+            }
+        }
+        int newPageId = pagesNumber();
+        HeapFilePage newPage = createPage(newPageId);
+        assert newPage.getEmptySlots().contains(0);
+        return new RecordId(newPageId, 0);
     }
 
     public static void createEmptyHeapFile(String path) throws IOException {
