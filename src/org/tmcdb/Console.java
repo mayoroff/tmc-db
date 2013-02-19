@@ -19,7 +19,7 @@ public final class Console {
         runDb(dbDir);
     }
 
-    private static void runDb(@NotNull File dbDir) {
+    public static void runDb(@NotNull File dbDir) {
         //noinspection ResultOfMethodCallIgnored
         dbDir.mkdirs();
         Database db = new Database(dbDir, System.out);
