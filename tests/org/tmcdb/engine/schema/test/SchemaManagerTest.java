@@ -35,7 +35,7 @@ public final class SchemaManagerTest {
 
     @Test
     public void serializingAndReadingSchemas() throws Exception {
-        File testDir = new File(TEST_DATA_DIR + "/1");
+        File testDir = new File(TEST_DATA_DIR + "/2");
         SchemaManager schemaManager = new SchemaManager(testDir);
         schemaManager.initialize();
         assertEquals(0, schemaManager.getAllTables().size());
