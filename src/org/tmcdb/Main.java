@@ -12,10 +12,6 @@ public final class Main {
             return;
         }
         String path = args[0];
-        File file = new File(path);
-        if (!file.isDirectory()) {
-            System.out.println(path + " should be a directory.");
-        }
-        Console.runDb(file);
+        Console.runDb(new File(path));
     }
 }
