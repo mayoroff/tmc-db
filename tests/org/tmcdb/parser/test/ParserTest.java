@@ -24,7 +24,7 @@ import static junit.framework.Assert.assertTrue;
 public final class ParserTest {
 
     @Test
-    public void simpleCreateTable() {
+    public void simpleCreateTable() throws ParserException {
         Instruction instruction = Parser.parse("CREATE TABLE mytable(a DOUBLE)");
         assertTrue(instruction instanceof CreateTableInstruction);
         CreateTableInstruction createTableInstruction = (CreateTableInstruction) instruction;
@@ -34,7 +34,7 @@ public final class ParserTest {
     }
 
     @Test
-    public void createTableLowerCase() {
+    public void createTableLowerCase() throws ParserException {
         Instruction instruction = Parser.parse("create table MYTABLE(A double)");
         assertTrue(instruction instanceof CreateTableInstruction);
         CreateTableInstruction createTableInstruction = (CreateTableInstruction) instruction;
@@ -44,7 +44,7 @@ public final class ParserTest {
     }
 
     @Test
-    public void severalTypes() {
+    public void severalTypes() throws ParserException {
         Instruction instruction = Parser.parse("CREATE TABLE thatTable (a DOUBLE, b INT, name VARCHAR(20), Address VARCHAR(300))");
         assertTrue(instruction instanceof CreateTableInstruction);
         CreateTableInstruction createTableInstruction = (CreateTableInstruction) instruction;
@@ -58,17 +58,17 @@ public final class ParserTest {
     }
 
     @Test(expected = ParserException.class)
-    public void createTableWithoutColumns() {
+    public void createTableWithoutColumns() throws ParserException {
         Parser.parse("CREATE TABLE tableWithoutColumns");
     }
 
     @Test(expected = ParserException.class)
-    public void createTableWithWrongType() {
+    public void createTableWithWrongType() throws ParserException {
         Parser.parse("CREATE TABLE tableWithoutColumns(a TRIPLE)");
     }
 
     @Test(expected = ParserException.class)
-    public void invalidSQL() {
+    public void invalidSQL() throws ParserException {
         Parser.parse("completely invalid sql");
     }
 
@@ -79,7 +79,7 @@ public final class ParserTest {
     }
 
     @Test
-    public void select() {
+    public void select() throws ParserException {
         Instruction i = Parser.parse("SELECT * FROM tableName");
         assertTrue(i instanceof SelectInstruction);
         SelectInstruction si = (SelectInstruction) i;
@@ -92,12 +92,12 @@ public final class ParserTest {
     }
 
     @Test(expected = ParserException.class)
-    public void selectWrongSyntax() {
+    public void selectWrongSyntax() throws ParserException {
         Parser.parse("SELECT # FROM tableName");
     }
 
     @Test
-    public void simpleInsert() {
+    public void simpleInsert() throws ParserException {
         Instruction instruction = Parser.parse("INSERT INTO t(a, b, c) VALUES (1, 2.3, 'abc')");
         assertTrue(instruction instanceof InsertInstruction);
         InsertInstruction insertInstruction = (InsertInstruction) instruction;
@@ -112,7 +112,7 @@ public final class ParserTest {
     }
 
     @Test
-    public void singleInsert() {
+    public void singleInsert() throws ParserException {
         Instruction instruction = Parser.parse("INSERT INTO t(a) VALUES ('abc')");
         assertTrue(instruction instanceof InsertInstruction);
         InsertInstruction insertInstruction = (InsertInstruction) instruction;
@@ -123,17 +123,17 @@ public final class ParserTest {
     }
 
     @Test(expected = ParserException.class)
-    public void emptyInsert() {
+    public void emptyInsert() throws ParserException {
         Parser.parse("INSERT INTO t VALUES ");
     }
 
     @Test(expected = ParserException.class)
-    public void unmatchedNumberOfValueAndColumnExpressions() {
+    public void unmatchedNumberOfValueAndColumnExpressions() throws ParserException {
         Parser.parse("INSERT INTO t(a, b, c, d) VALUES (1, 2.3, 'abc')");
     }
 
     @Test(expected = ParserException.class)
-    public void unmatchedNumberOfValueAndColumnExpressions2() {
+    public void unmatchedNumberOfValueAndColumnExpressions2() throws ParserException {
         Parser.parse("INSERT INTO t(a, b, c) VALUES (1, 2.3, 'abc', 3)");
     }
 }

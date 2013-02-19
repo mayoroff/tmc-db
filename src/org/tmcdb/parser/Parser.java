@@ -37,8 +37,11 @@ import java.util.List;
  */
 public final class Parser {
 
+    private Parser() {
+    }
+
     @NotNull
-    public static Instruction parse(@NotNull String query) {
+    public static Instruction parse(@NotNull String query) throws ParserException {
         CCJSqlParserManager parserManager = new CCJSqlParserManager();
         try {
             return parseStatement(parserManager.parse(new StringReader(query)));
@@ -49,7 +52,7 @@ public final class Parser {
     }
 
     @NotNull
-    private static Instruction parseStatement(@NotNull Statement parsedStatement) {
+    private static Instruction parseStatement(@NotNull Statement parsedStatement) throws ParserException {
         if (parsedStatement instanceof CreateTable) {
             return parseCreateTable((CreateTable) parsedStatement);
         }
@@ -62,14 +65,14 @@ public final class Parser {
         throw new ParserException("Unsupported SQL statement " + parsedStatement);
     }
 
-    private static Instruction parseInsert(Insert parsedStatement) {
+    private static Instruction parseInsert(Insert parsedStatement) throws ParserException {
         String tableName = parsedStatement.getTable().getName();
         List<InsertInstruction.ColumnNameAndData> result = parseColumnNamesAndValues(parsedStatement);
         return new InsertInstruction(tableName, result);
     }
 
     @NotNull
-    private static List<InsertInstruction.ColumnNameAndData> parseColumnNamesAndValues(@NotNull Insert parsedStatement) {
+    private static List<InsertInstruction.ColumnNameAndData> parseColumnNamesAndValues(@NotNull Insert parsedStatement) throws ParserException {
         ItemsList itemsList = parsedStatement.getItemsList();
         if (!(itemsList instanceof ExpressionList)) {
             throw new ParserException("Unsupported complex INSERT statement " + parsedStatement);
@@ -91,7 +94,7 @@ public final class Parser {
     }
 
     @NotNull
-    private static Object parseValue(@NotNull Object expression) {
+    private static Object parseValue(@NotNull Object expression) throws ParserException {
         if (expression instanceof LongValue) {
             long longValue = ((LongValue) expression).getValue();
             return (int) longValue;
@@ -106,7 +109,7 @@ public final class Parser {
     }
 
     @NotNull
-    private static Instruction parseSelectStatement(@NotNull Select parsedStatement) {
+    private static Instruction parseSelectStatement(@NotNull Select parsedStatement) throws ParserException {
         SelectBody selectBody = parsedStatement.getSelectBody();
         if (!(selectBody instanceof PlainSelect)) {
             throw new ParserException("Unsupported complex SELECT statement " + parsedStatement);
@@ -120,7 +123,7 @@ public final class Parser {
     }
 
     @NotNull
-    private static Instruction parseCreateTable(@NotNull CreateTable parsedStatement) {
+    private static Instruction parseCreateTable(@NotNull CreateTable parsedStatement) throws ParserException {
         String tableName = parsedStatement.getTable().getName();
         List columnDefinitions = parsedStatement.getColumnDefinitions();
         if (columnDefinitions == null) {
@@ -131,7 +134,7 @@ public final class Parser {
     }
 
     @NotNull
-    private static List<Column> parseColumnDefinitions(@NotNull List columnDefinitions) {
+    private static List<Column> parseColumnDefinitions(@NotNull List columnDefinitions) throws ParserException {
         List<Column> columns = new ArrayList<Column>();
         for (Object columnDefinition : columnDefinitions) {
             assert columnDefinition instanceof ColumnDefinition;
@@ -143,7 +146,7 @@ public final class Parser {
     }
 
     @NotNull
-    private static Type parseType(@NotNull ColDataType dataType) {
+    private static Type parseType(@NotNull ColDataType dataType) throws ParserException {
         String typeName = dataType.getDataType().toUpperCase();
         for (NumericType type : NumericType.values()) {
             if (type.toString().equals(typeName)) {
