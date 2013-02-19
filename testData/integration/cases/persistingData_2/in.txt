@@ -1,0 +1,2 @@
+INSERT INTO someTable(a) VALUES (2.5)
+SELECT * FROM someTable

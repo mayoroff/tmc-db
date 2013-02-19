@@ -35,9 +35,18 @@ public final class CursorUtils {
                 sb.append(",");
             }
             first = false;
-            sb.append(row.getValueForColumn(column));
+            sb.append(valueToCSV(row, column));
         }
         return sb.toString();
+    }
+
+    @NotNull
+    private static Object valueToCSV(@NotNull Row row, @NotNull Column column) {
+        Object value = row.getValueForColumn(column);
+        if (value instanceof String) {
+            return "\"" + value + "\"";
+        }
+        return value;
     }
 
     @NotNull

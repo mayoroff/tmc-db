@@ -1,0 +1,5 @@
+CREATE TABLE heroes(age INT, name VARCHAR(30), weight DOUBLE)
+INSERT INTO heroes(age, name, weight) VALUES (34, 'Tony Stark', 86.4)
+SELECT * FROM heroes
+INSERT INTO heroes(name, age, weight) VALUES ('Batman', 46, 98.1)
+SELECT * FROM heroes

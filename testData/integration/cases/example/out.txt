@@ -1,0 +1,13 @@
+OK
+
+OK 1
+
+age(int),name(string),weight(double)
+34,"Tony Stark",86.4
+
+OK 1
+
+age(int),name(string),weight(double)
+34,"Tony Stark",86.4
+46,"Batman",98.1
+

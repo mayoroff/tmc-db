@@ -41,6 +41,17 @@ public class WholeDatabaseTest {
         doTest("createInsertAndSelect");
     }
 
+    @Test
+    public void example() throws Exception {
+        doTest("example");
+    }
+
+    @Test
+    public void persistingData() throws Exception {
+        doTest("persistingData_1");
+        doTest("persistingData_2");
+    }
+
     private void doTest(@NotNull String testName) throws IOException {
         ByteOutputStream out = new ByteOutputStream();
         List<String> queries = TestUtils.readFileIntoList(CASES + "/" + testName + "/in.txt");

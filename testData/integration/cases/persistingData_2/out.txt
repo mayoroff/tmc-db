@@ -1,13 +1,3 @@
-OK
-
-OK 1
-
-OK 1
-
-OK 1
-
-OK 1
-
 OK 1
 
 a(double),b(int),name(string)
@@ -15,5 +5,6 @@ a(double),b(int),name(string)
 2.5,3,""
 2.5,0,"lol"
 0.0,0,"your daddy"
+2.5,0,""
 2.5,0,""
 
