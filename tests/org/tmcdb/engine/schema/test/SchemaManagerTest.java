@@ -7,6 +7,7 @@ import org.tmcdb.engine.data.NumericType;
 import org.tmcdb.engine.schema.Column;
 import org.tmcdb.engine.schema.SchemaManager;
 import org.tmcdb.engine.schema.TableSchema;
+import org.tmcdb.utils.TestUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,15 +61,6 @@ public final class SchemaManagerTest {
     @SuppressWarnings("ConstantConditions")
     @AfterClass
     public static void cleanup() throws IOException {
-        File folder = new File(TEST_DATA_DIR);
-        final File[] files = folder.listFiles();
-        for (File f : files) {
-            if (f.isDirectory()) {
-                for (File f2 : f.listFiles()) {
-                    f2.delete();
-                }
-            }
-            f.delete();
-        }
+        TestUtils.cleanDirectory(TEST_DATA_DIR);
     }
 }
