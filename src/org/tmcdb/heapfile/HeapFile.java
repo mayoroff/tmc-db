@@ -31,6 +31,8 @@ public class HeapFile {
     private final TableSchema tableSchema;
     @NotNull
     private final Map<Integer, HeapFilePage> idToPage = new HashMap<Integer, HeapFilePage>();
+    @NotNull
+    private int firstPageWithAnEmptySlot = 0;
 
     public HeapFile(@NotNull String pathToFile, @NotNull TableSchema tableSchema) throws IOException {
         this.tableSchema = tableSchema;
@@ -88,12 +90,14 @@ public class HeapFile {
 
     @NotNull
     private RecordId findEmptySlot() throws IOException {
-        for (int pageNumber = 0; pageNumber < pagesNumber(); ++pageNumber) {
+        for (int pageNumber = firstPageWithAnEmptySlot; pageNumber < pagesNumber(); ++pageNumber) {
             HeapFilePage page = getPage(pageNumber);
             Collection<Integer> emptySlots = page.getEmptySlots();
             if (!emptySlots.isEmpty()) {
                 Integer slotNumber = emptySlots.iterator().next();
                 return new RecordId(pageNumber, slotNumber);
+            } else {
+                firstPageWithAnEmptySlot = pageNumber;
             }
         }
         int newPageId = pagesNumber();

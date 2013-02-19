@@ -46,7 +46,7 @@ public final class Database {
             } else {
                 throw new IllegalStateException("Unknown instruction: " + instruction.getClass());
             }
-        } catch (Throwable e) {
+        } catch (Exception e) {
             outputStream.println(FAILURE + System.getProperty("line.separator") + e.getMessage());
         }
         outputStream.println();
