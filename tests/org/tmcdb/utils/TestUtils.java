@@ -2,7 +2,10 @@ package org.tmcdb.utils;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 /**
  * @author Pavel Talanov
@@ -27,5 +30,45 @@ public final class TestUtils {
                 success = f.delete();
             }
         }
+    }
+
+    //taken from http://stackoverflow.com/a/326448
+    @NotNull
+    public static String readFileIntoString(@NotNull String path) throws IOException {
+        File file = new File(path);
+        StringBuilder fileContents = new StringBuilder((int) file.length());
+        Scanner scanner = new Scanner(file);
+        String lineSeparator = System.getProperty("line.separator");
+        try {
+            while (scanner.hasNextLine()) {
+                fileContents.append(scanner.nextLine() + lineSeparator);
+            }
+            return fileContents.toString();
+        } finally {
+            scanner.close();
+        }
+    }
+
+
+    @NotNull
+    public static List<String> readFileIntoList(@NotNull String path) throws IOException {
+        BufferedReader in = null;
+        List<String> list = new ArrayList<String>();
+        try {
+            in = new BufferedReader(new FileReader(path));
+            String str;
+            while ((str = in.readLine()) != null) {
+                list.add(str);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (in != null) {
+                in.close();
+            }
+        }
+        return list;
     }
 }

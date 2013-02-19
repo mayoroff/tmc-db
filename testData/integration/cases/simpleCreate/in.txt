@@ -1,0 +1,1 @@
+CREATE TABLE someTable(a DOUBLE, b INT, name VARCHAR(43))
