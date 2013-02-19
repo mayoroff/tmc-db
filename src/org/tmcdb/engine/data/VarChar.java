@@ -47,4 +47,10 @@ public final class VarChar implements Type {
     public Object getDefaultValue() {
         return "";
     }
+
+    @NotNull
+    @Override
+    public String getPresentableName() {
+        return "string";
+    }
 }

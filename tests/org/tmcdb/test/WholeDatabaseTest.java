@@ -2,6 +2,7 @@ package org.tmcdb.test;
 
 import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 import junit.framework.Assert;
+import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -27,15 +28,29 @@ public class WholeDatabaseTest {
 
     @Test
     public void simpleCreateTable() throws Exception {
+        doTest("simpleCreate");
+    }
+
+    @Test
+    public void createAndInsert() throws Exception {
+        doTest("createAndInsert");
+    }
+
+    @Test
+    public void createInsertAndSelect() throws Exception {
+        doTest("createInsertAndSelect");
+    }
+
+    private void doTest(@NotNull String testName) throws IOException {
         ByteOutputStream out = new ByteOutputStream();
-        List<String> queries = TestUtils.readFileIntoList(CASES + "/simpleCreate/in.txt");
+        List<String> queries = TestUtils.readFileIntoList(CASES + "/" + testName + "/in.txt");
         Database db = new Database(new File(SANDBOX), new PrintStream(out));
         try {
             db.initialize();
             for (String query : queries) {
                 db.exec(query);
             }
-            Assert.assertEquals(TestUtils.readFileIntoString(CASES + "/simpleCreate/out.txt"), out.toString());
+            Assert.assertEquals(TestUtils.readFileIntoString(CASES + "/" + testName + "/out.txt"), out.toString());
         } finally {
             db.deinitialize();
         }

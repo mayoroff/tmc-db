@@ -13,4 +13,7 @@ public interface Type extends Serializable {
 
     @NotNull
     Object getDefaultValue();
+
+    @NotNull
+    String getPresentableName();
 }

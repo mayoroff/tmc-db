@@ -1,0 +1,6 @@
+CREATE TABLE someTable(a DOUBLE, b INT, name VARCHAR(43))
+INSERT INTO someTable(a, b, name) VALUES (2.5, 3, 'abc')
+INSERT INTO someTable(a, b) VALUES (2.5, 3)
+INSERT INTO someTable(a, name) VALUES (2.5, 'lol')
+INSERT INTO someTable(name) VALUES ('your daddy')
+INSERT INTO someTable(a) VALUES (2.5)

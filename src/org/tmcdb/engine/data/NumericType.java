@@ -12,8 +12,20 @@ public enum NumericType implements Type {
         public Object getDefaultValue() {
             return 0;
         }
+
+        @NotNull
+        @Override
+        public String getPresentableName() {
+            return "int";
+        }
     },
     DOUBLE(8) {
+        @NotNull
+        @Override
+        public String getPresentableName() {
+            return "double";
+        }
+
         @NotNull
         @Override
         public Object getDefaultValue() {
