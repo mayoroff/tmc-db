@@ -63,7 +63,7 @@ public final class SchemaManager {
         }
     }
 
-    public void deinitilize() {
+    public void deinitialize() {
         writeSchemas();
     }
 
@@ -84,7 +84,7 @@ public final class SchemaManager {
                     fileOutputStream.close();
                 }
             } catch (Exception e) {
-                throw new IllegalStateException("Error deserializing data from " + schemaFile.getAbsolutePath(), e);
+                throw new IllegalStateException("Error serializing data to " + schemaFile.getAbsolutePath(), e);
             }
 
         }
@@ -107,8 +107,8 @@ public final class SchemaManager {
     }
 
     public void addNewSchema(@NotNull TableSchema schema) {
-        //TODO: check for duplication
         checkInitialized();
         tableNameToSchema.put(schema.getTableName(), schema);
+        writeSchemas();
     }
 }

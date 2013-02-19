@@ -41,7 +41,7 @@ public final class SchemaManagerTest {
         assertEquals(0, schemaManager.getAllTables().size());
         schemaManager.addNewSchema(new TableSchema("test", Collections.singletonList(new Column("age", NumericType.INT))));
         assertEquals(1, schemaManager.getAllTables().size());
-        schemaManager.deinitilize();
+        schemaManager.deinitialize();
         schemaManager.initialize();
         assertEquals(1, schemaManager.getAllTables().size());
         TableSchema tableSchema = schemaManager.getAllTables().iterator().next();

@@ -45,7 +45,7 @@ public final class Engine {
 
     public void deinitialize() {
         heapFileManager.deinitialize();
-        schemaManager.deinitilize();
+        schemaManager.deinitialize();
     }
 
     @NotNull
