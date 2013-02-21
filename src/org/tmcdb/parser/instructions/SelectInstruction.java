@@ -10,8 +10,15 @@ public final class SelectInstruction implements Instruction {
     @NotNull
     private final String tableName;
 
-    public SelectInstruction(@NotNull String tableName) {
+    private final Where where;
+
+    public Where getWhere() {
+        return where;
+    }
+
+    public SelectInstruction(@NotNull String tableName, Where where) {
         this.tableName = tableName;
+        this.where = where;
     }
 
     @NotNull

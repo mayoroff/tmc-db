@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/jsqlparser.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/annotations.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jsqlparser-0.7.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

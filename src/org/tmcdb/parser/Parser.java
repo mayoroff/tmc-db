@@ -1,9 +1,7 @@
 package org.tmcdb.parser;
 
 import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.expression.DoubleValue;
-import net.sf.jsqlparser.expression.LongValue;
-import net.sf.jsqlparser.expression.StringValue;
+import net.sf.jsqlparser.expression.*;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.expression.operators.relational.ItemsList;
 import net.sf.jsqlparser.parser.CCJSqlParserManager;
@@ -22,10 +20,7 @@ import org.tmcdb.engine.data.NumericType;
 import org.tmcdb.engine.data.Type;
 import org.tmcdb.engine.data.VarChar;
 import org.tmcdb.engine.schema.Column;
-import org.tmcdb.parser.instructions.CreateTableInstruction;
-import org.tmcdb.parser.instructions.InsertInstruction;
-import org.tmcdb.parser.instructions.Instruction;
-import org.tmcdb.parser.instructions.SelectInstruction;
+import org.tmcdb.parser.instructions.*;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -118,8 +113,22 @@ public final class Parser {
         if (!(fromItem instanceof Table)) {
             throw new ParserException("Unsupported complex SELECT statement " + parsedStatement);
         }
+        Expression expression = ((PlainSelect) selectBody).getWhere();
+        Where whereItem;
+        if (expression != null)  {
+            if (!(expression instanceof BinaryExpression)) {
+                throw new ParserException("Unsupported complex SELECT statement ");
+            }
+            String left = ((BinaryExpression) expression).getLeftExpression().toString();
+            String right = ((BinaryExpression) expression).getRightExpression().toString();
+            String operation = ((BinaryExpression) expression).getStringExpression();
+            whereItem = new Where(left, right, operation);
+        } else {
+            whereItem = new Where();
+        }
+
         String tableName = ((Table) fromItem).getName();
-        return new SelectInstruction(tableName);
+        return new SelectInstruction(tableName,whereItem);
     }
 
     @NotNull

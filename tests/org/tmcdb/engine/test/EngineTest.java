@@ -13,6 +13,7 @@ import org.tmcdb.heapfile.cursor.Cursor;
 import org.tmcdb.parser.instructions.CreateTableInstruction;
 import org.tmcdb.parser.instructions.InsertInstruction;
 import org.tmcdb.parser.instructions.SelectInstruction;
+import org.tmcdb.parser.instructions.Where;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +34,7 @@ public final class EngineTest {
     public static final double VALUE = 2.6;
     public static final InsertInstruction SIMPLE_INSERT =
             new InsertInstruction("table", Collections.singletonList(new InsertInstruction.ColumnNameAndData("column", VALUE)));
-    public static final SelectInstruction SIMPLE_SELECT = new SelectInstruction("table");
+    public static final SelectInstruction SIMPLE_SELECT = new SelectInstruction("table",new Where());
 
     @Test
     public void сreateTable() throws Exception {
@@ -102,7 +103,7 @@ public final class EngineTest {
             engine.initialize();
             engine.createTable(SIMPLE_CREATE_TABLE);
             engine.insert(SIMPLE_INSERT);
-            engine.select(new SelectInstruction("wrong_table"));
+            engine.select(new SelectInstruction("wrong_table", new Where()));
         } finally {
             engine.deinitialize();
         }
