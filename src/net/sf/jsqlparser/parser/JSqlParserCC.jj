@@ -212,6 +212,8 @@ TOKEN: /* SQL Keywords. prefixed with K_ to avoid name clashes */
 |   <K_TRUNCATE:"TRUNCATE">
 |   <K_DISTINCT:"DISTINCT">
 |   <K_INTERSECT:"INTERSECT">
+|   <K_BTREE:"BTREE">
+|   <K_HASH:"HASH">
 }
 
 
@@ -1641,30 +1643,25 @@ CreateIndex CreateIndex():
 	List indexes = new ArrayList();
 	List colNames = null;
 	String parameter = null;
+	Token tk4 = null;
 }
 {
 	<K_CREATE>
 
 	tk=<K_INDEX>
     tk3=<S_IDENTIFIER>
-    "ON"
+    <K_ON>
     table = Table()
-    "("
-    						colNames=ColumnsNamesListAscDesc()
-    						{
-    							index = new Index();
-    							index.setType(tk.image);
-    							index.setName(tk3.image);
-    							index.setTableName(table.getName());
-    							index.setColumnsNames(colNames);
-    							//indexes.add(index);
-    						}
-    ")"
-
-
-
+	colNames=ColumnsNamesListAscDesc()
+    (<K_USING> (tk4=<K_BTREE>|tk4=<K_HASH>))
 
 	{
+        index = new Index();
+        index.setType(tk.image);
+        index.setName(tk3.image);
+        index.setTableName(table.getName());
+        index.setColumnsNames(colNames);
+        index.setStructure(tk4.image);
 		createIndex.setIndex(index);
 		return createIndex;
 	}
@@ -1761,7 +1758,7 @@ List ColumnsNamesListAscDesc():
 {
 	 "("
 
-	 	tk=<S_IDENTIFIER> ["ASC"| "DESC"] { retval.add(tk.image); }
+	 	tk=<S_IDENTIFIER> [<K_ASC>|<K_DESC>] { retval.add(tk.image); }
 	 	( "," tk=<S_IDENTIFIER> { retval.add(tk.image); } )*
 
 	")"

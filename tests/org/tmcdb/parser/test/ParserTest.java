@@ -8,10 +8,7 @@ import org.tmcdb.engine.data.VarChar;
 import org.tmcdb.engine.schema.Column;
 import org.tmcdb.parser.Parser;
 import org.tmcdb.parser.ParserException;
-import org.tmcdb.parser.instructions.CreateTableInstruction;
-import org.tmcdb.parser.instructions.InsertInstruction;
-import org.tmcdb.parser.instructions.Instruction;
-import org.tmcdb.parser.instructions.SelectInstruction;
+import org.tmcdb.parser.instructions.*;
 
 import java.util.List;
 
@@ -41,6 +38,27 @@ public final class ParserTest {
         assertEquals(createTableInstruction.getTableName(), "MYTABLE");
         assertEquals(createTableInstruction.getColumns().size(), 1);
         checkColumn(createTableInstruction, 0, "A", NumericType.DOUBLE);
+    }
+
+    @Test
+    public void createTreeIndex() throws ParserException {
+        Instruction instruction = Parser.parse("create index myindex ON mytable2 (col1) USING BTREE");
+        assertTrue(instruction instanceof CreateIndexInstruction);
+        CreateIndexInstruction createIndexInstruction = (CreateIndexInstruction) instruction;
+        assertEquals(createIndexInstruction.getTableName(), "mytable2");
+        assertEquals(createIndexInstruction.getIndexName(), "myindex");
+        assertEquals(createIndexInstruction.getIndexStructure(), "BTREE");
+
+    }
+
+    @Test
+    public void createHashIndex() throws ParserException {
+        Instruction instruction = Parser.parse("create index myindex ON mytable2 (col1) USING HASH");
+        assertTrue(instruction instanceof CreateIndexInstruction);
+        CreateIndexInstruction createIndexInstruction = (CreateIndexInstruction) instruction;
+        assertEquals(createIndexInstruction.getTableName(), "mytable2");
+        assertEquals(createIndexInstruction.getIndexName(), "myindex");
+        assertEquals(createIndexInstruction.getIndexStructure(), "HASH");
     }
 
     @Test

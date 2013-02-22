@@ -2,11 +2,13 @@ package org.tmcdb.parser;
 
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.*;
+import net.sf.jsqlparser.expression.StringValue;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.expression.operators.relational.ItemsList;
 import net.sf.jsqlparser.parser.CCJSqlParserManager;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.create.index.CreateIndex;
 import net.sf.jsqlparser.statement.create.table.ColDataType;
 import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
@@ -50,6 +52,9 @@ public final class Parser {
     private static Instruction parseStatement(@NotNull Statement parsedStatement) throws ParserException {
         if (parsedStatement instanceof CreateTable) {
             return parseCreateTable((CreateTable) parsedStatement);
+        }
+        if (parsedStatement instanceof CreateIndex) {
+            return parseCreateIndex((CreateIndex) parsedStatement);
         }
         if (parsedStatement instanceof Select) {
             return parseSelectStatement((Select) parsedStatement);
@@ -115,7 +120,7 @@ public final class Parser {
         }
         Expression expression = ((PlainSelect) selectBody).getWhere();
         Where whereItem;
-        if (expression != null)  {
+        if (expression != null) {
             if (!(expression instanceof BinaryExpression)) {
                 throw new ParserException("Unsupported complex SELECT statement ");
             }
@@ -128,7 +133,7 @@ public final class Parser {
         }
 
         String tableName = ((Table) fromItem).getName();
-        return new SelectInstruction(tableName,whereItem);
+        return new SelectInstruction(tableName, whereItem);
     }
 
     @NotNull
@@ -140,6 +145,18 @@ public final class Parser {
         }
         List<Column> columns = parseColumnDefinitions(columnDefinitions);
         return new CreateTableInstruction(tableName, columns);
+    }
+
+    @NotNull
+    private static Instruction parseCreateIndex(@NotNull CreateIndex parsedStatement) throws ParserException {
+        String indexName = parsedStatement.getIndex().getName();
+        String tableName = parsedStatement.getIndex().getTableName();
+        String indexStructure = parsedStatement.getIndex().getStructure();
+        List columnsNames = parsedStatement.getIndex().getColumnsNames();
+        if (columnsNames == null) {
+            throw new ParserException("CREATE INDEX statement must contain column names");
+        }
+        return new CreateIndexInstruction(indexName, tableName, indexStructure, columnsNames);
     }
 
     @NotNull
