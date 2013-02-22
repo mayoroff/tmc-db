@@ -44,31 +44,31 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
     private final int jjStopStringLiteralDfa_0(int pos, long active0, long active1) {
         switch (pos) {
             case 0:
-                if ((active0 & 0xffffffffffffffe0L) != 0L || (active1 & 0xfL) != 0L) {
-                    jjmatchedKind = 73;
+                if ((active1 & 0x800000000L) != 0L)
+                    return 8;
+                if ((active0 & 0xffffffffffffffe0L) != 0L || (active1 & 0x1fL) != 0L) {
+                    jjmatchedKind = 74;
                     return 36;
                 }
-                if ((active1 & 0x400000000L) != 0L)
-                    return 8;
-                if ((active1 & 0x80000L) != 0L)
+                if ((active1 & 0x100000L) != 0L)
                     return 1;
-                if ((active1 & 0x200000000L) != 0L)
+                if ((active1 & 0x400000000L) != 0L)
                     return 5;
                 return -1;
             case 1:
-                if ((active0 & 0x80980000440fe0L) != 0L || (active1 & 0x2L) != 0L)
-                    return 36;
-                if ((active0 & 0xff7f67ffffbbf000L) != 0L || (active1 & 0xdL) != 0L) {
+                if ((active0 & 0xff7f67ffffbbf000L) != 0L || (active1 & 0x1dL) != 0L) {
                     if (jjmatchedPos != 1) {
-                        jjmatchedKind = 73;
+                        jjmatchedKind = 74;
                         jjmatchedPos = 1;
                     }
                     return 36;
                 }
+                if ((active0 & 0x80980000440fe0L) != 0L || (active1 & 0x2L) != 0L)
+                    return 36;
                 return -1;
             case 2:
-                if ((active0 & 0xffffffffffe00000L) != 0L || (active1 & 0xfL) != 0L) {
-                    jjmatchedKind = 73;
+                if ((active0 & 0xffffffffffe00000L) != 0L || (active1 & 0x1fL) != 0L) {
+                    jjmatchedKind = 74;
                     jjmatchedPos = 2;
                     return 36;
                 }
@@ -76,8 +76,8 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
                     return 36;
                 return -1;
             case 3:
-                if ((active0 & 0xffffffe000000000L) != 0L || (active1 & 0x7L) != 0L) {
-                    jjmatchedKind = 73;
+                if ((active0 & 0xffffffe000000000L) != 0L || (active1 & 0x17L) != 0L) {
+                    jjmatchedKind = 74;
                     jjmatchedPos = 3;
                     return 36;
                 }
@@ -85,26 +85,26 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
                     return 36;
                 return -1;
             case 4:
-                if ((active0 & 0x1ffe000000000L) != 0L || (active1 & 0x4L) != 0L)
-                    return 36;
-                if ((active0 & 0xfffe000000000000L) != 0L || (active1 & 0x3L) != 0L) {
-                    jjmatchedKind = 73;
+                if ((active0 & 0xfffe000000000000L) != 0L || (active1 & 0x13L) != 0L) {
+                    jjmatchedKind = 74;
                     jjmatchedPos = 4;
                     return 36;
                 }
+                if ((active0 & 0x1ffe000000000L) != 0L || (active1 & 0x4L) != 0L)
+                    return 36;
                 return -1;
             case 5:
                 if ((active0 & 0xf800000000000000L) != 0L || (active1 & 0x3L) != 0L) {
-                    jjmatchedKind = 73;
+                    jjmatchedKind = 74;
                     jjmatchedPos = 5;
                     return 36;
                 }
-                if ((active0 & 0x7fe000000000000L) != 0L)
+                if ((active0 & 0x7fe000000000000L) != 0L || (active1 & 0x10L) != 0L)
                     return 36;
                 return -1;
             case 6:
                 if ((active0 & 0x8000000000000000L) != 0L || (active1 & 0x3L) != 0L) {
-                    jjmatchedKind = 73;
+                    jjmatchedKind = 74;
                     jjmatchedPos = 6;
                     return 36;
                 }
@@ -112,13 +112,13 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
                     return 36;
                 return -1;
             case 7:
-                if ((active0 & 0x8000000000000000L) != 0L || (active1 & 0x1L) != 0L)
-                    return 36;
                 if ((active1 & 0x2L) != 0L) {
-                    jjmatchedKind = 73;
+                    jjmatchedKind = 74;
                     jjmatchedPos = 7;
                     return 36;
                 }
+                if ((active0 & 0x8000000000000000L) != 0L || (active1 & 0x1L) != 0L)
+                    return 36;
                 return -1;
             default:
                 return -1;
@@ -138,41 +138,41 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
     private int jjMoveStringLiteralDfa0_0() {
         switch (curChar) {
             case 33:
-                return jjMoveStringLiteralDfa1_0(0x0L, 0x8000000L);
-            case 38:
-                return jjStopAtPos(0, 95);
-            case 40:
-                return jjStopAtPos(0, 81);
-            case 41:
-                return jjStopAtPos(0, 82);
-            case 42:
-                return jjStopAtPos(0, 84);
-            case 43:
-                return jjStopAtPos(0, 96);
-            case 44:
-                return jjStopAtPos(0, 80);
-            case 45:
-                return jjStartNfaWithStates_0(0, 97, 5);
-            case 46:
-                return jjStartNfaWithStates_0(0, 83, 1);
-            case 47:
-                return jjStartNfaWithStates_0(0, 98, 8);
-            case 59:
-                return jjStopAtPos(0, 78);
-            case 60:
-                jjmatchedKind = 87;
-                return jjMoveStringLiteralDfa1_0(0x0L, 0x6000000L);
-            case 61:
-                return jjStopAtPos(0, 79);
-            case 62:
-                jjmatchedKind = 86;
-                return jjMoveStringLiteralDfa1_0(0x0L, 0x1000000L);
-            case 63:
-                return jjStopAtPos(0, 85);
-            case 64:
                 return jjMoveStringLiteralDfa1_0(0x0L, 0x10000000L);
+            case 38:
+                return jjStopAtPos(0, 96);
+            case 40:
+                return jjStopAtPos(0, 82);
+            case 41:
+                return jjStopAtPos(0, 83);
+            case 42:
+                return jjStopAtPos(0, 85);
+            case 43:
+                return jjStopAtPos(0, 97);
+            case 44:
+                return jjStopAtPos(0, 81);
+            case 45:
+                return jjStartNfaWithStates_0(0, 98, 5);
+            case 46:
+                return jjStartNfaWithStates_0(0, 84, 1);
+            case 47:
+                return jjStartNfaWithStates_0(0, 99, 8);
+            case 59:
+                return jjStopAtPos(0, 79);
+            case 60:
+                jjmatchedKind = 88;
+                return jjMoveStringLiteralDfa1_0(0x0L, 0xc000000L);
+            case 61:
+                return jjStopAtPos(0, 80);
+            case 62:
+                jjmatchedKind = 87;
+                return jjMoveStringLiteralDfa1_0(0x0L, 0x2000000L);
+            case 63:
+                return jjStopAtPos(0, 86);
+            case 64:
+                return jjMoveStringLiteralDfa1_0(0x0L, 0x20000000L);
             case 94:
-                return jjStopAtPos(0, 99);
+                return jjStopAtPos(0, 100);
             case 65:
             case 97:
                 return jjMoveStringLiteralDfa1_0(0x47020L, 0x0L);
@@ -229,7 +229,7 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
                 return jjMoveStringLiteralDfa1_0(0x8000002100080000L, 0x0L);
             case 85:
             case 117:
-                return jjMoveStringLiteralDfa1_0(0x100018000000000L, 0x0L);
+                return jjMoveStringLiteralDfa1_0(0x100018000000000L, 0x10L);
             case 86:
             case 118:
                 return jjMoveStringLiteralDfa1_0(0x200000000000000L, 0x0L);
@@ -237,12 +237,12 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
             case 119:
                 return jjMoveStringLiteralDfa1_0(0x5080000000L, 0x0L);
             case 123:
-                return jjMoveStringLiteralDfa1_0(0x0L, 0x1d000000000L);
+                return jjMoveStringLiteralDfa1_0(0x0L, 0x3a000000000L);
             case 124:
-                jjmatchedKind = 94;
-                return jjMoveStringLiteralDfa1_0(0x0L, 0x20000000L);
+                jjmatchedKind = 95;
+                return jjMoveStringLiteralDfa1_0(0x0L, 0x40000000L);
             case 125:
-                return jjStopAtPos(0, 101);
+                return jjStopAtPos(0, 102);
             default:
                 return jjMoveNfa_0(7, 0);
         }
@@ -257,35 +257,35 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
         }
         switch (curChar) {
             case 61:
-                if ((active1 & 0x1000000L) != 0L)
-                    return jjStopAtPos(1, 88);
-                else if ((active1 & 0x2000000L) != 0L)
+                if ((active1 & 0x2000000L) != 0L)
                     return jjStopAtPos(1, 89);
-                else if ((active1 & 0x8000000L) != 0L)
-                    return jjStopAtPos(1, 91);
+                else if ((active1 & 0x4000000L) != 0L)
+                    return jjStopAtPos(1, 90);
+                else if ((active1 & 0x10000000L) != 0L)
+                    return jjStopAtPos(1, 92);
                 break;
             case 62:
-                if ((active1 & 0x4000000L) != 0L)
-                    return jjStopAtPos(1, 90);
+                if ((active1 & 0x8000000L) != 0L)
+                    return jjStopAtPos(1, 91);
                 break;
             case 64:
-                if ((active1 & 0x10000000L) != 0L)
-                    return jjStopAtPos(1, 92);
+                if ((active1 & 0x20000000L) != 0L)
+                    return jjStopAtPos(1, 93);
                 break;
             case 65:
             case 97:
                 return jjMoveStringLiteralDfa2_0(active0, 0x1240002040000000L, active1, 0x8L);
             case 68:
             case 100:
-                if ((active1 & 0x1000000000L) != 0L)
-                    return jjStopAtPos(1, 100);
+                if ((active1 & 0x2000000000L) != 0L)
+                    return jjStopAtPos(1, 101);
                 break;
             case 69:
             case 101:
                 return jjMoveStringLiteralDfa2_0(active0, 0x600a040008228000L, active1, 0L);
             case 70:
             case 102:
-                return jjMoveStringLiteralDfa2_0(active0, 0x10000000000000L, active1, 0x10000000000L);
+                return jjMoveStringLiteralDfa2_0(active0, 0x10000000000000L, active1, 0x20000000000L);
             case 72:
             case 104:
                 return jjMoveStringLiteralDfa2_0(active0, 0x4180000000L, active1, 0L);
@@ -302,7 +302,7 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
                     jjmatchedPos = 1;
                 } else if ((active0 & 0x800L) != 0L)
                     return jjStartNfaWithStates_0(1, 11, 36);
-                return jjMoveStringLiteralDfa2_0(active0, 0x80190000506000L, active1, 0x2L);
+                return jjMoveStringLiteralDfa2_0(active0, 0x80190000506000L, active1, 0x12L);
             case 79:
             case 111:
                 if ((active0 & 0x80L) != 0L)
@@ -328,11 +328,11 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
                 return jjMoveStringLiteralDfa2_0(active0, 0x400008000040000L, active1, 0L);
             case 84:
             case 116:
-                if ((active1 & 0x4000000000L) != 0L) {
-                    jjmatchedKind = 102;
+                if ((active1 & 0x8000000000L) != 0L) {
+                    jjmatchedKind = 103;
                     jjmatchedPos = 1;
                 }
-                return jjMoveStringLiteralDfa2_0(active0, 0L, active1, 0x8000000004L);
+                return jjMoveStringLiteralDfa2_0(active0, 0L, active1, 0x10000000004L);
             case 85:
             case 117:
                 return jjMoveStringLiteralDfa2_0(active0, 0x400800800000L, active1, 0L);
@@ -345,8 +345,8 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
                     return jjStartNfaWithStates_0(1, 6, 36);
                 break;
             case 124:
-                if ((active1 & 0x20000000L) != 0L)
-                    return jjStopAtPos(1, 93);
+                if ((active1 & 0x40000000L) != 0L)
+                    return jjStopAtPos(1, 94);
                 break;
             default:
                 break;
@@ -390,7 +390,7 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
                 return jjMoveStringLiteralDfa3_0(active0, 0x1040000000000L, active1, 0L);
             case 73:
             case 105:
-                return jjMoveStringLiteralDfa3_0(active0, 0x820018004000000L, active1, 0L);
+                return jjMoveStringLiteralDfa3_0(active0, 0x820018004000000L, active1, 0x10L);
             case 75:
             case 107:
                 return jjMoveStringLiteralDfa3_0(active0, 0x1000000L, active1, 0L);
@@ -404,8 +404,8 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
                 return jjMoveStringLiteralDfa3_0(active0, 0x200400000000L, active1, 0L);
             case 78:
             case 110:
-                if ((active1 & 0x10000000000L) != 0L)
-                    return jjStopAtPos(2, 104);
+                if ((active1 & 0x20000000000L) != 0L)
+                    return jjStopAtPos(2, 105);
                 return jjMoveStringLiteralDfa3_0(active0, 0x100000000000L, active1, 0L);
             case 79:
             case 111:
@@ -420,8 +420,8 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
                 return jjMoveStringLiteralDfa3_0(active0, 0L, active1, 0x4L);
             case 83:
             case 115:
-                if ((active1 & 0x8000000000L) != 0L)
-                    return jjStopAtPos(2, 103);
+                if ((active1 & 0x10000000000L) != 0L)
+                    return jjStopAtPos(2, 104);
                 return jjMoveStringLiteralDfa3_0(active0, 0x80000240200000L, active1, 0x9L);
             case 84:
             case 116:
@@ -521,6 +521,9 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
                 if ((active0 & 0x2000000L) != 0L)
                     return jjStartNfaWithStates_0(3, 25, 36);
                 break;
+            case 81:
+            case 113:
+                return jjMoveStringLiteralDfa4_0(active0, 0L, active1, 0x10L);
             case 82:
             case 114:
                 return jjMoveStringLiteralDfa4_0(active0, 0x4000000000L, active1, 0L);
@@ -605,6 +608,9 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
                 else if ((active0 & 0x1000000000000L) != 0L)
                     return jjStartNfaWithStates_0(4, 48, 36);
                 return jjMoveStringLiteralDfa5_0(active0, 0x126000000000000L, active1, 0L);
+            case 85:
+            case 117:
+                return jjMoveStringLiteralDfa5_0(active0, 0L, active1, 0x10L);
             case 88:
             case 120:
                 if ((active0 & 0x80000000000L) != 0L)
@@ -642,6 +648,8 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
                     return jjStartNfaWithStates_0(5, 56, 36);
                 else if ((active0 & 0x400000000000000L) != 0L)
                     return jjStartNfaWithStates_0(5, 58, 36);
+                else if ((active1 & 0x10L) != 0L)
+                    return jjStartNfaWithStates_0(5, 68, 36);
                 return jjMoveStringLiteralDfa6_0(active0, 0x4000000000000000L, active1, 0L);
             case 71:
             case 103:
@@ -800,14 +808,14 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
                         case 16:
                             if ((0x3ff001000000000L & l) == 0L)
                                 break;
-                            if (kind > 73)
-                                kind = 73;
+                            if (kind > 74)
+                                kind = 74;
                             jjCheckNAdd(16);
                             break;
                         case 7:
                             if ((0x3ff000000000000L & l) != 0L) {
-                                if (kind > 69)
-                                    kind = 69;
+                                if (kind > 70)
+                                    kind = 70;
                                 jjCheckNAddStates(0, 5);
                             } else if (curChar == 34)
                                 jjCheckNAddTwoStates(23, 24);
@@ -827,8 +835,8 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
                         case 1:
                             if ((0x3ff000000000000L & l) == 0L)
                                 break;
-                            if (kind > 68)
-                                kind = 68;
+                            if (kind > 69)
+                                kind = 69;
                             jjCheckNAddTwoStates(1, 2);
                             break;
                         case 3:
@@ -838,22 +846,22 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
                         case 4:
                             if ((0x3ff000000000000L & l) == 0L)
                                 break;
-                            if (kind > 68)
-                                kind = 68;
+                            if (kind > 69)
+                                kind = 69;
                             jjCheckNAdd(4);
                             break;
                         case 5:
                             if (curChar != 45)
                                 break;
-                            if (kind > 71)
-                                kind = 71;
+                            if (kind > 72)
+                                kind = 72;
                             jjCheckNAdd(6);
                             break;
                         case 6:
                             if ((0xffffffffffffdbffL & l) == 0L)
                                 break;
-                            if (kind > 71)
-                                kind = 71;
+                            if (kind > 72)
+                                kind = 72;
                             jjCheckNAdd(6);
                             break;
                         case 8:
@@ -877,8 +885,8 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
                                 jjCheckNAddTwoStates(12, 10);
                             break;
                         case 13:
-                            if (curChar == 47 && kind > 72)
-                                kind = 72;
+                            if (curChar == 47 && kind > 73)
+                                kind = 73;
                             break;
                         case 14:
                             if (curChar == 47)
@@ -895,8 +903,8 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
                         case 19:
                             if (curChar != 39)
                                 break;
-                            if (kind > 76)
-                                kind = 76;
+                            if (kind > 77)
+                                kind = 77;
                             jjstateSet[jjnewStateCnt++] = 20;
                             break;
                         case 20:
@@ -916,8 +924,8 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
                                 jjCheckNAddTwoStates(23, 24);
                             break;
                         case 24:
-                            if (curChar == 34 && kind > 77)
-                                kind = 77;
+                            if (curChar == 34 && kind > 78)
+                                kind = 78;
                             break;
                         case 26:
                             if ((0xffffffffffffdbffL & l) != 0L)
@@ -926,8 +934,8 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
                         case 28:
                             if ((0x3ff000000000000L & l) == 0L)
                                 break;
-                            if (kind > 69)
-                                kind = 69;
+                            if (kind > 70)
+                                kind = 70;
                             jjCheckNAddStates(0, 5);
                             break;
                         case 29:
@@ -949,15 +957,15 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
                         case 34:
                             if ((0x3ff000000000000L & l) == 0L)
                                 break;
-                            if (kind > 68)
-                                kind = 68;
+                            if (kind > 69)
+                                kind = 69;
                             jjCheckNAdd(34);
                             break;
                         case 35:
                             if ((0x3ff000000000000L & l) == 0L)
                                 break;
-                            if (kind > 69)
-                                kind = 69;
+                            if (kind > 70)
+                                kind = 70;
                             jjCheckNAdd(35);
                             break;
                         default:
@@ -970,20 +978,20 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
                     switch (jjstateSet[--i]) {
                         case 36:
                             if ((0x7fffffe87fffffeL & l) != 0L) {
-                                if (kind > 73)
-                                    kind = 73;
+                                if (kind > 74)
+                                    kind = 74;
                                 jjCheckNAdd(16);
                             }
                             if ((0x7fffffe87fffffeL & l) != 0L) {
-                                if (kind > 73)
-                                    kind = 73;
+                                if (kind > 74)
+                                    kind = 74;
                                 jjCheckNAddTwoStates(15, 16);
                             }
                             break;
                         case 7:
                             if ((0x7fffffe87fffffeL & l) != 0L) {
-                                if (kind > 73)
-                                    kind = 73;
+                                if (kind > 74)
+                                    kind = 74;
                                 jjCheckNAddTwoStates(15, 16);
                             } else if (curChar == 96)
                                 jjCheckNAddTwoStates(26, 27);
@@ -993,8 +1001,8 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
                                 jjAddStates(14, 15);
                             break;
                         case 6:
-                            if (kind > 71)
-                                kind = 71;
+                            if (kind > 72)
+                                kind = 72;
                             jjstateSet[jjnewStateCnt++] = 6;
                             break;
                         case 9:
@@ -1007,15 +1015,15 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
                         case 15:
                             if ((0x7fffffe87fffffeL & l) == 0L)
                                 break;
-                            if (kind > 73)
-                                kind = 73;
+                            if (kind > 74)
+                                kind = 74;
                             jjCheckNAddTwoStates(15, 16);
                             break;
                         case 16:
                             if ((0x7fffffe87fffffeL & l) == 0L)
                                 break;
-                            if (kind > 73)
-                                kind = 73;
+                            if (kind > 74)
+                                kind = 74;
                             jjCheckNAdd(16);
                             break;
                         case 18:
@@ -1036,8 +1044,8 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
                                 jjCheckNAddTwoStates(26, 27);
                             break;
                         case 27:
-                            if (curChar == 96 && kind > 77)
-                                kind = 77;
+                            if (curChar == 96 && kind > 78)
+                                kind = 78;
                             break;
                         case 32:
                             if ((0x2000000020L & l) != 0L)
@@ -1055,8 +1063,8 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
                         case 6:
                             if ((jjbitVec0[i2] & l2) == 0L)
                                 break;
-                            if (kind > 71)
-                                kind = 71;
+                            if (kind > 72)
+                                kind = 72;
                             jjstateSet[jjnewStateCnt++] = 6;
                             break;
                         case 9:
@@ -1119,10 +1127,10 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
             null, null, null, null, null, null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-            null, null, null, null, null, null, null, null, null, "\73", "\75", "\54", "\50",
-            "\51", "\56", "\52", "\77", "\76", "\74", "\76\75", "\74\75", "\74\76", "\41\75",
-            "\100\100", "\174\174", "\174", "\46", "\53", "\55", "\57", "\136", null, "\175", null,
-            null, null,};
+            null, null, null, null, null, null, null, null, null, null, "\73", "\75", "\54",
+            "\50", "\51", "\56", "\52", "\77", "\76", "\74", "\76\75", "\74\75", "\74\76",
+            "\41\75", "\100\100", "\174\174", "\174", "\46", "\53", "\55", "\57", "\136", null,
+            "\175", null, null, null,};
 
     /**
      * Lexer state names.
@@ -1131,13 +1139,13 @@ public class CCJSqlParserTokenManager implements CCJSqlParserConstants {
             "DEFAULT",
     };
     static final long[] jjtoToken = {
-            0xffffffffffffffe1L, 0x1fffffff23fL,
+            0xffffffffffffffe1L, 0x3ffffffe47fL,
     };
     static final long[] jjtoSkip = {
-            0x1eL, 0x180L,
+            0x1eL, 0x300L,
     };
     static final long[] jjtoSpecial = {
-            0x0L, 0x180L,
+            0x0L, 0x300L,
     };
     protected SimpleCharStream input_stream;
     private final int[] jjrounds = new int[36];

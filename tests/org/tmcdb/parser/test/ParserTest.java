@@ -62,6 +62,16 @@ public final class ParserTest {
     }
 
     @Test
+    public void createUniqueIndex() throws ParserException {
+        Instruction instruction = Parser.parse("create unique index myindex ON mytable2 (col1) USING HASH");
+        assertTrue(instruction instanceof CreateIndexInstruction);
+        CreateIndexInstruction createIndexInstruction = (CreateIndexInstruction) instruction;
+        assertEquals(createIndexInstruction.getTableName(), "mytable2");
+        assertEquals(createIndexInstruction.getIndexName(), "myindex");
+        assertEquals(createIndexInstruction.getIndexStructure(), "HASH");
+    }
+
+    @Test
     public void severalTypes() throws ParserException {
         Instruction instruction = Parser.parse("CREATE TABLE thatTable (a DOUBLE, b INT, name VARCHAR(20), Address VARCHAR(300))");
         assertTrue(instruction instanceof CreateTableInstruction);

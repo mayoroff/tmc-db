@@ -5,11 +5,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 /**
  * @author Pavel Talanov
+ * @author Arseny Mayorov
  */
 public final class TableSchema implements Serializable {
 
@@ -19,6 +21,9 @@ public final class TableSchema implements Serializable {
     private final List<Column> columns;
     @NotNull
     private final Map<String, Column> columnByName = new HashMap<String, Column>();
+
+    @NotNull
+    private final HashSet<String> indexes = new HashSet<String>();
 
     public TableSchema(@NotNull String tableName, @NotNull List<Column> columns) {
         this.tableName = tableName;
@@ -50,4 +55,17 @@ public final class TableSchema implements Serializable {
         }
         return rowSize;
     }
+
+    public void addIndex(String indexFileName) {
+        this.indexes.add(indexFileName);
+    }
+
+    public boolean indexExists(String indexFileName) {
+        return this.indexes.contains(indexFileName);
+    }
+
+    public void removeIndex(String indexFileName) {
+        this.indexes.remove(indexFileName);
+    }
+
 }

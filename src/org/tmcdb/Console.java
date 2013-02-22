@@ -14,12 +14,12 @@ public final class Console {
     private Console() {
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         File dbDir = new File("test.db");
         runDb(dbDir);
     }
 
-    public static void runDb(@NotNull File dbDir) {
+    public static void runDb(@NotNull File dbDir) throws IOException {
         //noinspection ResultOfMethodCallIgnored
         dbDir.mkdirs();
         Database db = new Database(dbDir, System.out);

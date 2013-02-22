@@ -10,10 +10,7 @@ import org.tmcdb.engine.data.NumericType;
 import org.tmcdb.engine.data.Row;
 import org.tmcdb.engine.schema.Column;
 import org.tmcdb.heapfile.cursor.Cursor;
-import org.tmcdb.parser.instructions.CreateTableInstruction;
-import org.tmcdb.parser.instructions.InsertInstruction;
-import org.tmcdb.parser.instructions.SelectInstruction;
-import org.tmcdb.parser.instructions.Where;
+import org.tmcdb.parser.instructions.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,10 +28,12 @@ public final class EngineTest {
     public static final Column COLUMN = new Column("column", NumericType.DOUBLE);
     public static final CreateTableInstruction SIMPLE_CREATE_TABLE =
             new CreateTableInstruction("table", Collections.singletonList(COLUMN));
+    public static final CreateIndexInstruction CREATE_TREE_INDEX =
+            new CreateIndexInstruction("myindex", "table", "BTREE", Collections.singletonList(COLUMN));
     public static final double VALUE = 2.6;
     public static final InsertInstruction SIMPLE_INSERT =
             new InsertInstruction("table", Collections.singletonList(new InsertInstruction.ColumnNameAndData("column", VALUE)));
-    public static final SelectInstruction SIMPLE_SELECT = new SelectInstruction("table",new Where());
+    public static final SelectInstruction SIMPLE_SELECT = new SelectInstruction("table", new Where());
 
     @Test
     public void сreateTable() throws Exception {
@@ -42,6 +41,18 @@ public final class EngineTest {
         try {
             engine.initialize();
             engine.createTable(SIMPLE_CREATE_TABLE);
+        } finally {
+            engine.deinitialize();
+        }
+    }
+
+    @Test
+    public void createIndex() throws Exception {
+        Engine engine = new Engine(createTestDir("2"));
+        try {
+            engine.initialize();
+            engine.createTable(SIMPLE_CREATE_TABLE);
+            engine.createIndex(CREATE_TREE_INDEX);
         } finally {
             engine.deinitialize();
         }

@@ -9,6 +9,7 @@ import java.io.IOException;
 
 /**
  * @author Pavel Talanov
+ * @author Arseny Mayorov
  */
 public final class HeapFileCursor implements Cursor {
 
@@ -21,6 +22,10 @@ public final class HeapFileCursor implements Cursor {
     public HeapFileCursor(@NotNull HeapFile file) throws IOException {
         this.file = file;
         this.currentPageCursor = file.getPage(currentPageNumber).getCursor();
+    }
+
+    public int getCurrentPageNumber() {
+        return currentPageNumber;
     }
 
     @Override

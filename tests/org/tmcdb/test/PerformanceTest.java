@@ -14,7 +14,7 @@ import java.io.PrintStream;
 public final class PerformanceTest {
     private static final String SANDBOX_ROOT = "testData/performance";
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         performTest(400000);
         TestUtils.cleanDirectory(SANDBOX_ROOT);
         for (int i = 0; i <= 200000; i += 10000) {
@@ -23,7 +23,7 @@ public final class PerformanceTest {
         TestUtils.cleanDirectory(SANDBOX_ROOT);
     }
 
-    private static void performTest(int insertionsNumber) {
+    private static void performTest(int insertionsNumber) throws IOException {
         File file = new File(SANDBOX_ROOT + "/" + insertionsNumber);
         file.mkdirs();
         //PrintStream dummyOut = new PrintStream(new ByteOutputStream());

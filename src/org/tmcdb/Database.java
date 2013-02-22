@@ -5,12 +5,10 @@ import org.tmcdb.engine.Engine;
 import org.tmcdb.heapfile.cursor.Cursor;
 import org.tmcdb.heapfile.cursor.CursorUtils;
 import org.tmcdb.parser.Parser;
-import org.tmcdb.parser.instructions.CreateTableInstruction;
-import org.tmcdb.parser.instructions.InsertInstruction;
-import org.tmcdb.parser.instructions.Instruction;
-import org.tmcdb.parser.instructions.SelectInstruction;
+import org.tmcdb.parser.instructions.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 
 /**
@@ -26,7 +24,7 @@ public final class Database {
     @NotNull
     private final PrintStream outputStream;
 
-    public Database(@NotNull File workingDirectory, @NotNull PrintStream outputStream) {
+    public Database(@NotNull File workingDirectory, @NotNull PrintStream outputStream) throws IOException {
         this.outputStream = outputStream;
         this.engine = new Engine(workingDirectory);
     }
@@ -42,6 +40,9 @@ public final class Database {
                 outputStream.println(SUCCESS + " 1");
             } else if (instruction instanceof CreateTableInstruction) {
                 engine.createTable((CreateTableInstruction) instruction);
+                outputStream.println(SUCCESS);
+            } else if (instruction instanceof CreateIndexInstruction) {
+                engine.createIndex((CreateIndexInstruction) instruction);
                 outputStream.println(SUCCESS);
             } else {
                 throw new IllegalStateException("Unknown instruction: " + instruction.getClass());

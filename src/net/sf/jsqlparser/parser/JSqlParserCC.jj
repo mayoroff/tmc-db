@@ -214,6 +214,7 @@ TOKEN: /* SQL Keywords. prefixed with K_ to avoid name clashes */
 |   <K_INTERSECT:"INTERSECT">
 |   <K_BTREE:"BTREE">
 |   <K_HASH:"HASH">
+|   <K_UNIQUE:"UNIQUE">
 }
 
 
@@ -1647,7 +1648,7 @@ CreateIndex CreateIndex():
 }
 {
 	<K_CREATE>
-
+    [<K_UNIQUE>]
 	tk=<K_INDEX>
     tk3=<S_IDENTIFIER>
     <K_ON>
