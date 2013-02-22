@@ -2,9 +2,6 @@ package org.tmcdb.parser.instructions;
 
 import java.lang.Boolean;
 import java.lang.String;
-import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.BinaryExpression;
-
 /**
  * @author Ilya Averyanov
  */

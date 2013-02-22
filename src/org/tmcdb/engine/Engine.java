@@ -8,6 +8,7 @@ import org.tmcdb.engine.schema.TableSchema;
 import org.tmcdb.heapfile.HeapFile;
 import org.tmcdb.heapfile.HeapFileManager;
 import org.tmcdb.heapfile.cursor.Cursor;
+import org.tmcdb.heapfile.cursor.FilteredCursor;
 import org.tmcdb.parser.instructions.CreateTableInstruction;
 import org.tmcdb.parser.instructions.InsertInstruction;
 import org.tmcdb.parser.instructions.SelectInstruction;
@@ -50,7 +51,15 @@ public final class Engine {
 
     @NotNull
     public Cursor select(@NotNull SelectInstruction selectInstruction) throws IOException, LogicException {
+        if (!selectInstruction.getWhere().isEmpty())
+        {
+            return new FilteredCursor(getHeapFile(selectInstruction.getTableName()).getCursor()
+                    ,schemaManager.getSchema(selectInstruction.getTableName()).getColumn(selectInstruction.getWhere().getLeft()),
+                    selectInstruction.getWhere().getRight());
+        }   else
+        {
         return getHeapFile(selectInstruction.getTableName()).getCursor();
+        }
     }
 
     @NotNull
