@@ -16,10 +16,10 @@ public final class PerformanceTest {
 
     public static void main(String[] args) throws IOException {
         performTest(400000);
-        TestUtils.cleanDirectory(SANDBOX_ROOT);
+        /*TestUtils.cleanDirectory(SANDBOX_ROOT);
         for (int i = 0; i <= 200000; i += 10000) {
             performTest(i);
-        }
+        }  */
         TestUtils.cleanDirectory(SANDBOX_ROOT);
     }
 
@@ -38,9 +38,11 @@ public final class PerformanceTest {
             database.initialize();
             database.exec("CREATE TABLE a(a INT, b INT, c VARCHAR(80), d VARCHAR(80))");
             long start = System.currentTimeMillis();
+            database.exec("CREATE INDEX myind ON a(ASC a) USING BTREE");
             for (int i = 0; i < insertionsNumber; ++i) {
                 database.exec("INSERT INTO a(a, b) VALUES(3, 5)");
             }
+            database.exec("CREATE INDEX myind ON a(ASC a) USING BTREE");
             long end = System.currentTimeMillis();
             System.out.println(insertionsNumber + " insertions: " + (end - start) + " millis");
         } finally {

@@ -7,8 +7,7 @@ import org.tmcdb.engine.schema.Column;
 import java.io.IOException;
 
 /**
- *
- * @author  Ilya Averyanov
+ * @author Ilya Averyanov
  */
 
 public class FilteredCursor implements Cursor {
@@ -30,7 +29,7 @@ public class FilteredCursor implements Cursor {
     public Row next() throws IOException {
         Row result = cursor.next();
         while (result != null) {
-            if (result.getValueForColumn(column).toString().equals(value)){
+            if (result.getValueForColumn(column).toString().equals(value)) {
                 return result;
             } else {
                 result = cursor.next();
@@ -43,5 +42,9 @@ public class FilteredCursor implements Cursor {
     @Override
     public void close() {
         cursor.close();
+    }
+
+    public int getCurrentPageNumber() {
+        return cursor.getCurrentPageNumber();
     }
 }

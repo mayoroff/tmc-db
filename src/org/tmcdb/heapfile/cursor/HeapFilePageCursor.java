@@ -36,4 +36,8 @@ public final class HeapFilePageCursor implements Cursor {
     public void close() {
         page = null;
     }
+
+    public int getCurrentPageNumber() {
+        return 0;
+    }
 }

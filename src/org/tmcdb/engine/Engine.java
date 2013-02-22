@@ -2,6 +2,7 @@ package org.tmcdb.engine;
 
 import org.jetbrains.annotations.NotNull;
 import org.tmcdb.engine.data.Row;
+import org.tmcdb.engine.indexes.IndexInterface;
 import org.tmcdb.engine.indexes.IndexesManager;
 import org.tmcdb.engine.indexes.TreeIndex;
 import org.tmcdb.engine.schema.Column;
@@ -114,18 +115,41 @@ public final class Engine {
         schemaManager.addNewSchema(newSchema);
     }
 
-    public void createIndex(@NotNull CreateIndexInstruction createIndexInstruction) throws LogicException {
+    public void createIndex(@NotNull CreateIndexInstruction createIndexInstruction) throws LogicException, IOException {
         String tableName = createIndexInstruction.getTableName();
         String indexName = createIndexInstruction.getIndexName();
         List<Column> columns = createIndexInstruction.getColumns();
         String indexStructure = createIndexInstruction.getIndexStructure();
 
+        if (schemaManager.getSchema(tableName).indexExists(IndexesManager.indexFileName(indexName, tableName, columns))) {
+
+        } else {
+            IndexInterface index = createIndex(tableName, indexName, columns, indexStructure);
+
+            Cursor cursor = getHeapFile(tableName).getCursor();
+            Integer pageNumber = cursor.getCurrentPageNumber();
+            Row row = cursor.next();
+            while (row != null) {
+                String value = new String();
+                for (Column c : columns) {
+                    value += row.getValueForColumn(c);
+                }
+                index.addPageNumber(value, pageNumber);
+            }
+        }
+    }
+
+    private IndexInterface createIndex(String tableName, String indexName, List<Column> columns, String indexStructure) {
+        IndexInterface index = null;
+
         if (indexStructure.equals("BTREE")) {
-            treeIndexManager.createIndexFor(tableName, columns, indexName, indexStructure);
+            index = treeIndexManager.createIndexFor(tableName, columns, indexName, indexStructure);
         } else if (indexStructure.equals("HASH")) {
             assert (false);
-            //treeIndexManager.createIndexFor(tableName, columns);
+            //hashIndexManager.createIndexFor(tableName, columns);
         }
+        schemaManager.getSchema(tableName).addIndex(IndexesManager.indexFileName(indexName, tableName, columns));
+        return index;
     }
 
 }

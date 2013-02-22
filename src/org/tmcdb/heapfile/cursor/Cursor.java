@@ -12,5 +12,7 @@ public interface Cursor {
     @Nullable
     Row next() throws IOException;
 
+    int getCurrentPageNumber();
+
     void close();
 }

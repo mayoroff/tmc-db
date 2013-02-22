@@ -1,13 +1,15 @@
 package org.tmcdb.engine.indexes;
 
+import java.util.List;
+
 /**
  * Created by Arseny Mayorov.
  * Date: 22.02.13
  */
 public interface IndexInterface<KeyType> {
-    int getPageNumberFor(KeyType key);
+    List<Integer> getPageNumber(KeyType key);
 
-    void setPageNumberFor(KeyType key);
+    void addPageNumber(KeyType key, Integer pageNumber);
 
-    void deletePageNumberFor(KeyType key);
+    void removePageNumber(KeyType key, Integer pageNumber);
 }

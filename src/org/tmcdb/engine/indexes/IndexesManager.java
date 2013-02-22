@@ -43,20 +43,30 @@ public final class IndexesManager<IndexType> {
         return null;
     }
 
-    @Nullable
-    public IndexType createIndexFor(@NotNull String tableName, @NotNull List<Column> columnNames,
-                                    @NotNull String indexName, @NotNull String indexStructure) {
+    public static String indexFileName(@NotNull String indexName, @NotNull String tableName,
+                                       @NotNull List<Column> columnNames) {
         String columnsString = new String();
         for (Column c : columnNames) {
             columnsString = columnsString + c.getName() + ".";
         }
+        return indexName + "." + tableName + "." + columnsString;
+    }
+
+    @Nullable
+    public IndexType createIndexFor(@NotNull String tableName, @NotNull List<Column> columnNames,
+                                    @NotNull String indexName, @NotNull String indexStructure) {
+
+        IndexType index = null;
+
 
         if (indexStructure.equals("BTREE")) {
-            return (IndexType) new TreeIndex(indexesDir + "\\" + indexName + "." + tableName + "." + columnsString);
+            index = (IndexType) new TreeIndex(indexesDir + "\\" + indexFileName(indexName, tableName, columnNames), recman);
         }
         if (indexStructure.equals("HASH")) {
             assert (false);
         }
-        return null;
+
+
+        return index;
     }
 }
